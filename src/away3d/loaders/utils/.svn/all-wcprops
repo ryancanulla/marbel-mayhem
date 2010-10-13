@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/2729/trunk/fp10/Away3D/src/away3d/loaders/utils
+END
+ChannelLibrary.as
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/2480/trunk/fp10/Away3D/src/away3d/loaders/utils/ChannelLibrary.as
+END
+GeometryLibrary.as
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/loaders/utils/GeometryLibrary.as
+END
+MaterialLibrary.as
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/2017/trunk/fp10/Away3D/src/away3d/loaders/utils/MaterialLibrary.as
+END
+AnimationLibrary.as
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/loaders/utils/AnimationLibrary.as
+END
+TextureLoadQueue.as
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/loaders/utils/TextureLoadQueue.as
+END
+TextureLoader.as
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/loaders/utils/TextureLoader.as
+END
+CentralMaterialLibrary.as
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/2729/trunk/fp10/Away3D/src/away3d/loaders/utils/CentralMaterialLibrary.as
+END

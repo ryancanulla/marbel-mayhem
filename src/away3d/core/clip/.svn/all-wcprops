@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/clip
+END
+NearfieldClipping.as
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/clip/NearfieldClipping.as
+END
+Clipping.as
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/core/clip/Clipping.as
+END
+RectangleClipping.as
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/core/clip/RectangleClipping.as
+END
+FrustumClipping.as
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/clip/FrustumClipping.as
+END

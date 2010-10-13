@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/core/geom
+END
+Line2D.as
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/geom/Line2D.as
+END
+NGon.as
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/core/geom/NGon.as
+END
+PathDebug.as
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/core/geom/PathDebug.as
+END
+Frustum.as
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/core/geom/Frustum.as
+END
+Plane3D.as
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/core/geom/Plane3D.as
+END
+PathCommand.as
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/core/geom/PathCommand.as
+END
+Path.as
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/core/geom/Path.as
+END

@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/base
+END
+Object3D.as
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/base/Object3D.as
+END
+Vertex.as
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/base/Vertex.as
+END
+Face.as
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/base/Face.as
+END
+Segment.as
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/base/Segment.as
+END
+Graphics3D.as
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/2227/trunk/fp10/Away3D/src/away3d/core/base/Graphics3D.as
+END
+Element.as
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/base/Element.as
+END
+VertexClassification.as
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/base/VertexClassification.as
+END
+UV.as
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/base/UV.as
+END
+Geometry.as
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/base/Geometry.as
+END
+Morpher.as
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/core/base/Morpher.as
+END
+Mesh.as
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/2841/trunk/fp10/Away3D/src/away3d/core/base/Mesh.as
+END

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/cameras/lenses
+END
+OrthogonalLens.as
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/cameras/lenses/OrthogonalLens.as
+END
+AbstractLens.as
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/cameras/lenses/AbstractLens.as
+END
+ZoomFocusLens.as
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/cameras/lenses/ZoomFocusLens.as
+END
+PerspectiveLens.as
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/cameras/lenses/PerspectiveLens.as
+END
+SphericalLens.as
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/cameras/lenses/SphericalLens.as
+END

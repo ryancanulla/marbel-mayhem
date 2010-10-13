@@ -1,0 +1,107 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/core/utils
+END
+Color.as
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/utils/Color.as
+END
+HitManager.as
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/core/utils/HitManager.as
+END
+CacheStore.as
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/utils/CacheStore.as
+END
+ViewSourceObject.as
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/core/utils/ViewSourceObject.as
+END
+FaceMaterialVO.as
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/2137/trunk/fp10/Away3D/src/away3d/core/utils/FaceMaterialVO.as
+END
+Debug.as
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/utils/Debug.as
+END
+IClonable.as
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/utils/IClonable.as
+END
+FaceDictionaryVO.as
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/utils/FaceDictionaryVO.as
+END
+Cast.as
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/2657/trunk/fp10/Away3D/src/away3d/core/utils/Cast.as
+END
+DofCache.as
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/2726/trunk/fp10/Away3D/src/away3d/core/utils/DofCache.as
+END
+FaceNormalShader.as
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/core/utils/FaceNormalShader.as
+END
+BezierUtils.as
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/core/utils/BezierUtils.as
+END
+CameraVarsStore.as
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/core/utils/CameraVarsStore.as
+END
+ValueObject.as
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/utils/ValueObject.as
+END
+FaceNormalShaderVO.as
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/2409/trunk/fp10/Away3D/src/away3d/core/utils/FaceNormalShaderVO.as
+END
+Init.as
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/core/utils/Init.as
+END
+CastError.as
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/utils/CastError.as
+END

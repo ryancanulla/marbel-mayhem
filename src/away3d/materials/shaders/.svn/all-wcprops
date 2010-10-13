@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/materials/shaders
+END
+SpecularDot3Shader.as
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/materials/shaders/SpecularDot3Shader.as
+END
+SpecularPhongShader.as
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/materials/shaders/SpecularPhongShader.as
+END
+DiffuseDot3Shader.as
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/materials/shaders/DiffuseDot3Shader.as
+END
+AmbientShader.as
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/2758/trunk/fp10/Away3D/src/away3d/materials/shaders/AmbientShader.as
+END
+DiffusePhongShader.as
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/materials/shaders/DiffusePhongShader.as
+END
+EnviroShader.as
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/materials/shaders/EnviroShader.as
+END
+AbstractShader.as
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/materials/shaders/AbstractShader.as
+END
+DepthShader.as
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/2786/trunk/fp10/Away3D/src/away3d/materials/shaders/DepthShader.as
+END

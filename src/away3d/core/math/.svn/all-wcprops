@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/2827/trunk/fp10/Away3D/src/away3d/core/math
+END
+Quaternion.as
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1565/trunk/fp10/Away3D/src/away3d/core/math/Quaternion.as
+END
+Vector3DUtils.as
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/2799/trunk/fp10/Away3D/src/away3d/core/math/Vector3DUtils.as
+END
+Matrix3DUtils.as
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/2796/trunk/fp10/Away3D/src/away3d/core/math/Matrix3DUtils.as
+END

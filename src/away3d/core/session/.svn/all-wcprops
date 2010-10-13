@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/core/session
+END
+BitmapSession.as
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/2726/trunk/fp10/Away3D/src/away3d/core/session/BitmapSession.as
+END
+AbstractSession.as
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/2808/trunk/fp10/Away3D/src/away3d/core/session/AbstractSession.as
+END
+SpriteSession.as
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/2726/trunk/fp10/Away3D/src/away3d/core/session/SpriteSession.as
+END
