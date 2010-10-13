@@ -4,6 +4,7 @@ package
     import away3d.core.utils.Cast;
     import away3d.loaders.utils.MaterialLibrary;
     import away3d.materials.BitmapMaterial;
+    import away3d.materials.ColorMaterial;
     import away3d.materials.GlassMaterial;
     import away3d.materials.WireColorMaterial;
     import away3d.primitives.Cube;
@@ -48,16 +49,21 @@ package
 
         private var player1AccX:Number = 0;
         private var player1AccZ:Number = 0;
+        private var player1VX:Number = 0;
+        private var player1VY:Number = 0;
 
         private var player2AccX:Number = 0;
         private var player2AccZ:Number = 0;
+        private var player2VX:Number = 0;
+        private var player2VY:Number = 0;
 
         private var rotate1:Number;
         private var rotate2:Number;
 
-        private static const FRICTION:Number = .98;
-        private static const SPEED:Number = 75;
+        private static const FRICTION:Number = .95;
+        private static const SPEED:Number = 4;
         private static const GRAVITY:Number = 25;
+        private static const SPRING:Number = .2;
 
         public function Main() {
             stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -100,8 +106,14 @@ package
         }
 
         private function createObjects():void {
+            createWorld();
+            createFloor();
+            createPlayers();
+        }
+
+        private function createPlayers():void {
             player1 = new Sphere();
-            player1.material = new WireColorMaterial(0xffffff);
+            player1.material = new WireColorMaterial(0xd07500);
             player1.radius = 20;
             player1.y = player1.radius;
 
@@ -110,19 +122,26 @@ package
             player2.radius = 20;
             player2.y = player2.radius;
 
-            var floorMaterial:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.grassBitmap));
+            models.push({ model: player1 }, { model: player2 });
+        }
 
-            floor = new Plane({ material: floorMaterial });
+        private function createFloor():void {
+            //var floorMaterial:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.grassBitmap));
+
+            floor = new Plane();
+            floor.material = new ColorMaterial(0x2f241e);
             floor.y = 0;
             floor.x = 0;
             floor.z = 0;
-            floor.width = 600;
-            floor.height = 600;
+            floor.width = 900;
+            floor.height = 900;
             floor.segmentsH = 10;
             floor.segmentsW = 10;
             floor.yUp = true;
             view.scene.addChild(floor);
+        }
 
+        private function createWorld():void {
             var front:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.skyFront));
             var back:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.skyBack));
             var left:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.skyLeft));
@@ -133,29 +152,62 @@ package
             world = new Skybox(front, left, back, right, up, down);
 
             view.scene.addChild(world);
-
-            models.push({ model: player1 }, { model: player2 });
-            resetObjects();
         }
 
         private function resetObjects():void {
-            player1.x = 150;
-            player1.z = 200;
+            player1.x = 50;
+            player1.z = 100;
 
-            player2.x = -150;
-            player2.z = -200;
+            player2.x = -50;
+            player2.z = -100;
         }
 
         protected function _onEnterFrame(ev:Event):void {
-            player1.x += player1AccX;
-            player1.z -= player1AccZ;
-            player1.roll(player1AccX * -1);
-            player1.pitch(player1AccZ * -1);
+            player1VX *= FRICTION;
+            player1VY *= FRICTION;
 
-            player2.x += player2AccX;
-            player2.z -= player2AccZ;
-            player2.roll(player2AccX * -1);
-            player2.pitch(player2AccZ * -1);
+            player2VX *= FRICTION;
+            player2VY *= FRICTION;
+
+            if (player1.distanceTo(player2) < 40) {
+                player2.x += player1VX * 1.5;
+                player2.z -= player1VY * 1.5;
+
+                player2VX = player1VX * 1.5;
+                player2VY = player1VY * 1.5;
+            }
+
+            if (player2.distanceTo(player1) < 40) {
+                player1.x += player2VX * 1.5;
+                player1.z -= player2VY * 1.5;
+
+                player1VX = player2VX * 1.5;
+                player1VY = player2VY * 1.5;
+            }
+
+            player1.x += player1VX;
+            player1.z -= player1VY;
+
+            player2.x += player2VX;
+            player2.z -= player2VY;
+            player2.pitch(player2VX * SPEED / 2);
+
+            /*var dx:Number = (player1.x - player1.radius / 2) - (player2.x - player2.radius / 2);
+               var dy:Number = player1.y - player2.y;
+               var dist:Number = Math.sqrt(dx * dx + dy * dy);
+               var minDist:Number = player1.radius + player2.radius;
+
+               if (dist < minDist) {
+               trace("hit");
+               var angle:Number = Math.atan2(dy, dx);
+
+               var tx:Number = player2.x + Math.cos(angle) * minDist;
+               var ty:Number = player2.y + Math.sin(angle) * minDist;
+               //player1.x += (tx - player1.x) * SPRING;
+               //player1.z -= (ty - player1.z) * SPRING;
+             }*/
+
+            //trace("distance: " + player1.distanceTo(player2));
 
             if (player1.x < floor.x - floor.width / 2) {
                 player1.y -= GRAVITY;
@@ -184,7 +236,7 @@ package
             }
 
             if (player1.distanceTo(player2) < player1.radius) {
-                trace("hit");
+                //trace("hit");
             }
             view.render();
         }
@@ -215,12 +267,20 @@ package
         private function handleAccelerometerEventFactory(remote:IRemoteControl):Function {
             return function(e:com.litl.sdk.event.AccelerometerEvent):void {
                 if (players[remote.id].model == player1) {
-                    player1AccX = e.accelerationY * SPEED;
-                    player1AccZ = e.accelerationX * SPEED;
+
+                    player1VX += e.accelerationY * SPEED;
+                    player1VY += e.accelerationX * SPEED;
+
+                        //player1AccX = e.accelerationX;
+                        //player1AccZ = e.accelerationY;
                 }
                 else if (players[remote.id].model == player2) {
-                    player2AccX = e.accelerationY * SPEED;
-                    player2AccZ = e.accelerationX * SPEED;
+
+                    player2VX += e.accelerationY * SPEED;
+                    player2VY += e.accelerationX * SPEED;
+
+                        //player2AccX = e.accelerationX;
+                        //player2AccZ = e.accelerationY;
                 }
             }
         }
