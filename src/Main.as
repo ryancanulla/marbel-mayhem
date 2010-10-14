@@ -28,6 +28,8 @@ package
     import flash.events.Event;
     import flash.utils.Dictionary;
 
+    import net.hires.debug.Stats;
+
     [SWF(backgroundColor="000000", width="1920", height="1080", framerate="30")]
     public class Main extends Sprite
     {
@@ -64,6 +66,7 @@ package
         private static const SPEED:Number = 4;
         private static const GRAVITY:Number = 25;
         private static const SPRING:Number = .2;
+        private static const MASS:Number = 5;
 
         public function Main() {
             stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -87,6 +90,11 @@ package
 
             createView();
             createScene();
+            creatStatsMonitor();
+        }
+
+        private function creatStatsMonitor():void {
+            addChild(new Stats());
         }
 
         protected function createView():void {
@@ -114,12 +122,12 @@ package
         private function createPlayers():void {
             player1 = new Sphere();
             player1.material = new WireColorMaterial(0xd07500);
-            player1.radius = 20;
+            player1.radius = 25;
             player1.y = player1.radius;
 
             player2 = new Sphere();
             player2.material = new WireColorMaterial(0xffffff);
-            player2.radius = 20;
+            player2.radius = 25;
             player2.y = player2.radius;
 
             models.push({ model: player1 }, { model: player2 });
@@ -169,30 +177,36 @@ package
             player2VX *= FRICTION;
             player2VY *= FRICTION;
 
-            if (player1.distanceTo(player2) < 40) {
-                player2.x += player1VX * 1.5;
-                player2.z -= player1VY * 1.5;
-
-                player2VX = player1VX * 1.5;
-                player2VY = player1VY * 1.5;
-            }
-
-            if (player2.distanceTo(player1) < 40) {
-                player1.x += player2VX * 1.5;
-                player1.z -= player2VY * 1.5;
-
-                player1VX = player2VX * 1.5;
-                player1VY = player2VY * 1.5;
-            }
-
             player1.x += player1VX;
             player1.z -= player1VY;
 
             player2.x += player2VX;
             player2.z -= player2VY;
-            player2.pitch(player2VX * SPEED / 2);
 
-            /*var dx:Number = (player1.x - player1.radius / 2) - (player2.x - player2.radius / 2);
+            if (player1.distanceTo(player2) < 40) {
+                var vxTotal:Number = player1VX - player2VX;
+                player1VX = ((MASS - MASS) * player1VX + 2 * MASS * player2VX) / MASS + MASS;
+                //player1VY = player2VY;
+                player2VX = vxTotal + player1VX;
+                //player2VY = player1VY;
+
+                player1.x += player1VX;
+                //player1.z -= player2VY;
+                player2.x += player2VX;
+                    //player1.z -= player1VY;
+            }
+
+            /*
+               //player1VX = player2VX;
+               //player1VY = player2VY;
+               //player2VX = player1VX;
+               //player2VY = player1VY;
+               //player1.x += player2VX * 1.5;
+               //player1.z -= player2VY * 1.5;
+               //player1.x += player1VX * 1.5;
+               //player1.z -= player1VY * 1.5;
+
+               var dx:Number = (player1.x - player1.radius / 2) - (player2.x - player2.radius / 2);
                var dy:Number = player1.y - player2.y;
                var dist:Number = Math.sqrt(dx * dx + dy * dy);
                var minDist:Number = player1.radius + player2.radius;
@@ -233,10 +247,6 @@ package
             }
             else if (player2.z < floor.z - floor.height / 2) {
                 player2.y -= GRAVITY;
-            }
-
-            if (player1.distanceTo(player2) < player1.radius) {
-                //trace("hit");
             }
             view.render();
         }
