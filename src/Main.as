@@ -66,7 +66,7 @@ package
         private static const SPEED:Number = 4;
         private static const GRAVITY:Number = 25;
         private static const SPRING:Number = .2;
-        private static const MASS:Number = 5;
+        private static const MASS:Number = 2;
 
         public function Main() {
             stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -122,12 +122,12 @@ package
         private function createPlayers():void {
             player1 = new Sphere();
             player1.material = new WireColorMaterial(0xd07500);
-            player1.radius = 25;
+            player1.radius = 40;
             player1.y = player1.radius;
 
             player2 = new Sphere();
             player2.material = new WireColorMaterial(0xffffff);
-            player2.radius = 25;
+            player2.radius = 40;
             player2.y = player2.radius;
 
             models.push({ model: player1 }, { model: player2 });
@@ -165,7 +165,6 @@ package
         private function resetObjects():void {
             player1.x = 50;
             player1.z = 100;
-
             player2.x = -50;
             player2.z = -100;
         }
@@ -173,55 +172,71 @@ package
         protected function _onEnterFrame(ev:Event):void {
             player1VX *= FRICTION;
             player1VY *= FRICTION;
-
             player2VX *= FRICTION;
             player2VY *= FRICTION;
 
             player1.x += player1VX;
             player1.z -= player1VY;
-
             player2.x += player2VX;
             player2.z -= player2VY;
 
-            if (player1.distanceTo(player2) < 40) {
-                var vxTotal:Number = player1VX - player2VX;
-                player1VX = ((MASS - MASS) * player1VX + 2 * MASS * player2VX) / MASS + MASS;
-                //player1VY = player2VY;
-                player2VX = vxTotal + player1VX;
-                //player2VY = player1VY;
+            var distX:Number = player2.x - player1.x;
+            var distY:Number = player2.z - player1.z;
+            var dist:Number = Math.sqrt(distX * distX + distY * distY);
 
-                player1.x += player1VX;
-                //player1.z -= player2VY;
-                player2.x += player2VX;
-                    //player1.z -= player1VY;
+            if (dist < player1.radius + player2.radius) {
+
+                var tempX:Number = player1VX;
+                var tempY:Number = player1VY;
+                player1VX = player2VX;
+                player1VY = player2VY;
+                player2VX = tempX;
+                player2VY = tempY;
+
+                /*var angle:Number = Math.atan2(distY, distX);
+                var sin:Number = Math.sin(angle);
+                var cos:Number = Math.cos(angle);
+
+                // rotate player positions
+                var x0:Number = 0;
+                var y0:Number = 0;
+                var x1:Number = distX * cos + distY * sin;
+                var y1:Number = distY * cos - distX * sin;
+
+                // rotate velocities
+                var vx0:Number = player1VX * cos + player1VY * sin;
+                var vy0:Number = player1VY * cos - player1VX * sin;
+                var vx1:Number = player2VX * cos + player2VY * sin;
+                var vy1:Number = player2VY * cos - player2VX * sin;
+
+                // collision reaction
+                var vxTotal:Number = vx0 - vx1;
+                vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / MASS + MASS;
+                vx1 = vxTotal + vx0;
+
+                x0 += vx0;
+                x1 += vx1;
+
+                // rotate positions back
+                var x0Final:Number = x0 * cos - y0 * sin;
+                var y0Final:Number = y0 * cos + x0 * sin;
+                var x1Final:Number = x1 * cos - y1 * sin;
+                var y1Final:Number = y1 * cos + x1 * sin;
+
+                // adjust positions to actual screen positions
+                player2.x = player1.x + x1Final;
+                player2.z = player1.z + y1Final;
+                player1.x = player1.x + x0Final;
+                player1.z = player1.z + y0Final;
+
+                // rotate the velocities back
+                player1VX = vx0 * cos - vy0 * sin;
+                player1VY = vy0 * cos + vx0 * sin;
+                player2VX = vx1 * cos - vy1 * sin;
+                player2VY = vy1 * cos + vx1 * sin;
+                */
             }
 
-            /*
-               //player1VX = player2VX;
-               //player1VY = player2VY;
-               //player2VX = player1VX;
-               //player2VY = player1VY;
-               //player1.x += player2VX * 1.5;
-               //player1.z -= player2VY * 1.5;
-               //player1.x += player1VX * 1.5;
-               //player1.z -= player1VY * 1.5;
-
-               var dx:Number = (player1.x - player1.radius / 2) - (player2.x - player2.radius / 2);
-               var dy:Number = player1.y - player2.y;
-               var dist:Number = Math.sqrt(dx * dx + dy * dy);
-               var minDist:Number = player1.radius + player2.radius;
-
-               if (dist < minDist) {
-               trace("hit");
-               var angle:Number = Math.atan2(dy, dx);
-
-               var tx:Number = player2.x + Math.cos(angle) * minDist;
-               var ty:Number = player2.y + Math.sin(angle) * minDist;
-               //player1.x += (tx - player1.x) * SPRING;
-               //player1.z -= (ty - player1.z) * SPRING;
-             }*/
-
-            //trace("distance: " + player1.distanceTo(player2));
 
             if (player1.x < floor.x - floor.width / 2) {
                 player1.y -= GRAVITY;
@@ -277,20 +292,12 @@ package
         private function handleAccelerometerEventFactory(remote:IRemoteControl):Function {
             return function(e:com.litl.sdk.event.AccelerometerEvent):void {
                 if (players[remote.id].model == player1) {
-
                     player1VX += e.accelerationY * SPEED;
                     player1VY += e.accelerationX * SPEED;
-
-                        //player1AccX = e.accelerationX;
-                        //player1AccZ = e.accelerationY;
                 }
                 else if (players[remote.id].model == player2) {
-
                     player2VX += e.accelerationY * SPEED;
                     player2VY += e.accelerationX * SPEED;
-
-                        //player2AccX = e.accelerationX;
-                        //player2AccZ = e.accelerationY;
                 }
             }
         }
