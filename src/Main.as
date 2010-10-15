@@ -1,11 +1,20 @@
 package
 {
     import away3d.containers.View3D;
+    import away3d.core.session.BitmapSession;
     import away3d.core.utils.Cast;
+    import away3d.lights.DirectionalLight3D;
+    import away3d.lights.PointLight3D;
     import away3d.loaders.utils.MaterialLibrary;
     import away3d.materials.BitmapMaterial;
     import away3d.materials.ColorMaterial;
+    import away3d.materials.DepthBitmapMaterial;
+    import away3d.materials.EnviroBitmapMaterial;
     import away3d.materials.GlassMaterial;
+    import away3d.materials.PhongBitmapMaterial;
+    import away3d.materials.PhongColorMaterial;
+    import away3d.materials.ShadingColorMaterial;
+    import away3d.materials.WhiteShadingBitmapMaterial;
     import away3d.materials.WireColorMaterial;
     import away3d.primitives.Cube;
     import away3d.primitives.Plane;
@@ -13,13 +22,16 @@ package
     import away3d.primitives.Sphere;
 
     import com.litl.marbelmayhem.GameMaterials;
+    import com.litl.marbelmayhem.Scoreboard;
     import com.litl.sdk.event.RemoteStatusEvent;
+    import com.litl.sdk.message.UserInputMessage;
     import com.litl.sdk.richinput.Accelerometer;
     import com.litl.sdk.richinput.IRemoteControl;
     import com.litl.sdk.richinput.RemoteManager;
     import com.litl.sdk.service.LitlService;
 
     import flash.display.Bitmap;
+    import flash.display.BitmapData;
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.display.Stage;
@@ -30,7 +42,7 @@ package
 
     import net.hires.debug.Stats;
 
-    [SWF(backgroundColor="000000", width="1920", height="1080", framerate="30")]
+    [SWF(width="1280", height="800", framerate="30")]
     public class Main extends Sprite
     {
         private var view:View3D;
@@ -43,6 +55,8 @@ package
         public var remoteIds:Array;
         public var models:Array;
         public var players:Dictionary;
+
+        private var scoreboard:Scoreboard;
 
         private var service:LitlService;
 
@@ -63,8 +77,8 @@ package
         private var rotate2:Number;
 
         private static const FRICTION:Number = .95;
-        private static const SPEED:Number = 4;
-        private static const GRAVITY:Number = 25;
+        private static const SPEED:Number = 3;
+        private static const GRAVITY:Number = 20;
         private static const SPRING:Number = .2;
         private static const MASS:Number = 2;
 
@@ -76,6 +90,8 @@ package
         }
 
         private function init():void {
+
+
             remoteIds = new Array();
             models = new Array();
             players = new Dictionary();
@@ -90,7 +106,13 @@ package
 
             createView();
             createScene();
+            createScoreboard();
             creatStatsMonitor();
+        }
+
+        private function createScoreboard():void {
+            scoreboard = new Scoreboard(this.stage);
+            addChild(scoreboard);
         }
 
         private function creatStatsMonitor():void {
@@ -99,10 +121,11 @@ package
 
         protected function createView():void {
             view = new View3D();
-            view.x = 960;
-            view.y = 540;
-            view.camera.y = 500;
-            view.camera.z = -1000;
+            view.x = 640;
+            view.y = 400;
+            view.camera.y = 400;
+            //view.camera.rotationY = 90;
+            view.camera.z = -1500;
             view.camera.lookAt(view.scene.position);
 
             addChild(view);
@@ -116,19 +139,36 @@ package
         private function createObjects():void {
             createWorld();
             createFloor();
+            createLighting();
             createPlayers();
         }
 
+        private function createLighting():void {
+            // create a new directional white light source with specific ambient, diffuse and specular parameters
+            var light:PointLight3D = new PointLight3D();
+            light.y = 300;
+            light.x = 500;
+            light.z = -500;
+            light.brightness = 5;
+            view.scene.addLight(light);
+        }
+
         private function createPlayers():void {
+            var bmp:BitmapData = new BitmapData(200,200);
+            bmp.perlinNoise(200,200,2,Math.random(),true,true);
+            var mat:BitmapMaterial = new BitmapMaterial(bmp);
+
             player1 = new Sphere();
             player1.material = new WireColorMaterial(0xd07500);
+            player1.segmentsH = 10;
+            player1.segmentsW = 10;
             player1.radius = 40;
-            player1.y = player1.radius;
 
             player2 = new Sphere();
             player2.material = new WireColorMaterial(0xffffff);
+            player2.segmentsH = 10;
+            player2.segmentsW = 10;
             player2.radius = 40;
-            player2.y = player2.radius;
 
             models.push({ model: player1 }, { model: player2 });
         }
@@ -136,16 +176,21 @@ package
         private function createFloor():void {
             //var floorMaterial:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.grassBitmap));
 
+            var bmp:BitmapData = new BitmapData(200,200);
+            bmp.perlinNoise(200,200,2,Math.random(),true,true);
+            var mat:BitmapMaterial = new BitmapMaterial(bmp);
+
             floor = new Plane();
             floor.material = new ColorMaterial(0x2f241e);
             floor.y = 0;
             floor.x = 0;
-            floor.z = 0;
-            floor.width = 900;
-            floor.height = 900;
+            floor.z = -300;
+            floor.width = 1100;
+            floor.height = 1100;
             floor.segmentsH = 10;
             floor.segmentsW = 10;
             floor.yUp = true;
+            //floor.ownCanvas = true;
             view.scene.addChild(floor);
         }
 
@@ -157,19 +202,33 @@ package
             var up:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.skyUp));
             var down:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.skyDown));
 
-            world = new Skybox(front, left, back, right, up, down);
-
+            world = new Skybox(front, right, back, left, up, down);
             view.scene.addChild(world);
         }
 
-        private function resetObjects():void {
-            player1.x = 50;
-            player1.z = 100;
-            player2.x = -50;
-            player2.z = -100;
+        private function resetObjects(player:Number=0):void {
+            if(player == 1){
+                player1.x = 50;
+                player1.z = 100;
+                player1.y = player1.radius + 5;
+            }
+            else if(player == 2) {
+                player2.x = -50;
+                player2.z = -100;
+                player2.y = player2.radius + 5;
+            }
+            else {
+                player1.x = 50;
+                player1.z = 100;
+                player1.y = player1.radius + 5;
+                player2.x = -50;
+                player2.z = -100;
+                player2.y = player2.radius + 5;
+            }
         }
 
         protected function _onEnterFrame(ev:Event):void {
+           // view.camera.yaw(1);
             player1VX *= FRICTION;
             player1VY *= FRICTION;
             player2VX *= FRICTION;
@@ -184,16 +243,18 @@ package
             var distY:Number = player2.z - player1.z;
             var dist:Number = Math.sqrt(distX * distX + distY * distY);
 
+            trace(dist);
+
             if (dist < player1.radius + player2.radius) {
 
-                var tempX:Number = player1VX;
-                var tempY:Number = player1VY;
-                player1VX = player2VX;
-                player1VY = player2VY;
-                player2VX = tempX;
-                player2VY = tempY;
+                //var tempX:Number = player1VX;
+                //var tempY:Number = player1VY;
+                //player1VX = player2VX * 1.5;
+                //player1VY = player2VY * 1.5;
+                //player2VX = tempX * 1.5;
+                //player2VY = tempY * 1.5;
 
-                /*var angle:Number = Math.atan2(distY, distX);
+                var angle:Number = Math.atan2(distY, distX);
                 var sin:Number = Math.sin(angle);
                 var cos:Number = Math.cos(angle);
 
@@ -211,7 +272,8 @@ package
 
                 // collision reaction
                 var vxTotal:Number = vx0 - vx1;
-                vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / MASS + MASS;
+                trace(vxTotal);
+                vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / (MASS + MASS);
                 vx1 = vxTotal + vx0;
 
                 x0 += vx0;
@@ -234,9 +296,8 @@ package
                 player1VY = vy0 * cos + vx0 * sin;
                 player2VX = vx1 * cos - vy1 * sin;
                 player2VY = vy1 * cos + vx1 * sin;
-                */
-            }
 
+            }
 
             if (player1.x < floor.x - floor.width / 2) {
                 player1.y -= GRAVITY;
@@ -263,7 +324,22 @@ package
             else if (player2.z < floor.z - floor.height / 2) {
                 player2.y -= GRAVITY;
             }
+
+            if (player1.y < floor.y) {
+                player1.y -= GRAVITY;
+            }
+            if (player2.y < floor.y) {
+                player2.y -= GRAVITY;
+            }
             view.render();
+
+            if(player2.y < -1000){
+               resetObjects(2);
+            }
+
+            if(player1.y < -1000){
+                resetObjects(1);
+            }
         }
 
         private function handleRemoteStatus(e:RemoteStatusEvent):void {
@@ -276,6 +352,7 @@ package
                 if (e.remoteEnabled) {
                     handler = handleAccelerometerEventFactory(remote);
                     remoteHandlers[remote] = handler;
+                    accelerometer.setXSmoothingLevel("medium");
                     accelerometer.addEventListener(com.litl.sdk.event.AccelerometerEvent.UPDATE, handler);
                     addPlayer(remote.id);
                 }
