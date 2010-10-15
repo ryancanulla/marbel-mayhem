@@ -8,11 +8,15 @@ package com.litl.marbelmayhem
         private var GrassImage:Class;
         public var grassBitmap:Bitmap = new GrassImage();
 
+        [Embed(source="/../assets/brushed-metal.jpg")]
+        private var MetalImage:Class;
+        public var metalBitmap:Bitmap = new MetalImage();
+
         [Embed(source="/../assets/abstractSky-back.png")]
         private var BitmapFront:Class;
         public var skyFront:Bitmap = new BitmapFront();
 
-        [Embed(source="/../assets/abstractSky-left.png")]
+        [Embed(source="/../assets/abstractSky-right.png")]
         private var BitmapRight:Class;
         public var skyRight:Bitmap = new BitmapRight();
 
@@ -20,7 +24,7 @@ package com.litl.marbelmayhem
         private var BitmapBack:Class;
         public var skyBack:Bitmap = new BitmapBack();
 
-        [Embed(source="/../assets/abstractSky-right.png")]
+        [Embed(source="/../assets/abstractSky-left.png")]
         private var BitmapLeft:Class;
         public var skyLeft:Bitmap = new BitmapLeft();
 
