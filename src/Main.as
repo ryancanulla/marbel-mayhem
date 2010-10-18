@@ -21,8 +21,11 @@ package
     import away3d.primitives.Skybox;
     import away3d.primitives.Sphere;
 
+    import com.litl.marbelmayhem.FontManager;
     import com.litl.marbelmayhem.GameMaterials;
     import com.litl.marbelmayhem.Scoreboard;
+    import com.litl.marbelmayhem.model.GameManager;
+    import com.litl.marbelmayhem.views.CountDown;
     import com.litl.sdk.event.RemoteStatusEvent;
     import com.litl.sdk.message.UserInputMessage;
     import com.litl.sdk.richinput.Accelerometer;
@@ -38,9 +41,12 @@ package
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
     import flash.events.Event;
+    import flash.events.TimerEvent;
     import flash.utils.Dictionary;
 
     import net.hires.debug.Stats;
+
+    import org.osmf.net.StreamingURLResource;
 
     [SWF(width="1280", height="800", framerate="30")]
     public class Main extends Sprite
@@ -54,6 +60,7 @@ package
 
         public var remoteIds:Array;
         public var models:Array;
+        private var model:GameManager = GameManager.getInstance();
         public var players:Dictionary;
 
         private var scoreboard:Scoreboard;
@@ -86,11 +93,16 @@ package
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.align = StageAlign.TOP_LEFT;
 
+            var fonts:FontManager = new FontManager();
+
             init();
         }
 
         private function init():void {
+            model.addEventListener("RenderMarbleEvent", renderScreen);
+            model.addEventListener("StartNewGameMarbleEvent", newGame);
 
+            model.startNewGame();
 
             remoteIds = new Array();
             models = new Array();
@@ -116,7 +128,10 @@ package
         }
 
         private function creatStatsMonitor():void {
-            addChild(new Stats());
+            var stats:Stats = new Stats();
+            stats.x = 0;
+            stats.y = 80;
+            addChild(stats);
         }
 
         protected function createView():void {
@@ -129,7 +144,6 @@ package
             view.camera.lookAt(view.scene.position);
 
             addChild(view);
-            addEventListener(Event.ENTER_FRAME, _onEnterFrame);
         }
 
         protected function createScene():void {
@@ -145,29 +159,29 @@ package
 
         private function createLighting():void {
             // create a new directional white light source with specific ambient, diffuse and specular parameters
-            var light:PointLight3D = new PointLight3D();
-            light.y = 300;
-            light.x = 500;
-            light.z = -500;
-            light.brightness = 5;
-            view.scene.addLight(light);
+            //var light:PointLight3D = new PointLight3D();
+            //light.y = 300;
+            //light.x = 500;
+            //light.z = -500;
+            //light.brightness = 5;
+            //view.scene.addLight(light);
         }
 
         private function createPlayers():void {
-            var bmp:BitmapData = new BitmapData(200,200);
-            bmp.perlinNoise(200,200,2,Math.random(),true,true);
+            var bmp:BitmapData = new BitmapData(200, 200);
+            bmp.perlinNoise(200, 200, 2, Math.random(), true, true);
             var mat:BitmapMaterial = new BitmapMaterial(bmp);
 
             player1 = new Sphere();
-            player1.material = new WireColorMaterial(0xd07500);
-            player1.segmentsH = 10;
-            player1.segmentsW = 10;
+            player1.material = new WireColorMaterial(0xBE1E2D);
+            player1.segmentsH = 15;
+            player1.segmentsW = 15;
             player1.radius = 40;
 
             player2 = new Sphere();
-            player2.material = new WireColorMaterial(0xffffff);
-            player2.segmentsH = 10;
-            player2.segmentsW = 10;
+            player2.material = new WireColorMaterial(0x004518);
+            player2.segmentsH = 15;
+            player2.segmentsW = 15;
             player2.radius = 40;
 
             models.push({ model: player1 }, { model: player2 });
@@ -176,15 +190,15 @@ package
         private function createFloor():void {
             //var floorMaterial:BitmapMaterial = new BitmapMaterial(Cast.bitmap(gameMaterials.grassBitmap));
 
-            var bmp:BitmapData = new BitmapData(200,200);
-            bmp.perlinNoise(200,200,2,Math.random(),true,true);
+            var bmp:BitmapData = new BitmapData(200, 200);
+            bmp.perlinNoise(200, 200, 2, Math.random(), true, true);
             var mat:BitmapMaterial = new BitmapMaterial(bmp);
 
             floor = new Plane();
             floor.material = new ColorMaterial(0x2f241e);
             floor.y = 0;
             floor.x = 0;
-            floor.z = -300;
+            floor.z = -200;
             floor.width = 1100;
             floor.height = 1100;
             floor.segmentsH = 10;
@@ -206,46 +220,52 @@ package
             view.scene.addChild(world);
         }
 
-        private function resetObjects(player:Number=0):void {
-            if(player == 1){
-                player1.x = 50;
-                player1.z = 100;
+        private function resetObjects(player:Number = 0):void {
+            if (player == 1) {
+                player1.x = 150;
+                player1.z = -400;
                 player1.y = player1.radius + 5;
             }
-            else if(player == 2) {
+            else if (player == 2) {
                 player2.x = -50;
-                player2.z = -100;
+                player2.z = -400;
                 player2.y = player2.radius + 5;
             }
             else {
-                player1.x = 50;
-                player1.z = 100;
+                player1.x = -150;
+                player1.z = -400;
                 player1.y = player1.radius + 5;
                 player2.x = -50;
-                player2.z = -100;
+                player2.z = -400;
                 player2.y = player2.radius + 5;
             }
         }
 
-        protected function _onEnterFrame(ev:Event):void {
-           // view.camera.yaw(1);
+        private function newGame(e:Event):void {
+            var countdown:CountDown = new CountDown(this.stage);
+            countdown.x = stage.stageWidth / 2 - countdown.width;
+            countdown.y = stage.stageHeight / 2;
+            addChild(countdown);
+        }
+
+        protected function renderScreen(e:Event):void {
+            if (model.gameInProgress == false) {
+                view.render();
+                return;
+            }
+
+            calculateScores(false);
+
             player1VX *= FRICTION;
             player1VY *= FRICTION;
             player2VX *= FRICTION;
             player2VY *= FRICTION;
 
-            player1.x += player1VX;
-            player1.z -= player1VY;
-            player2.x += player2VX;
-            player2.z -= player2VY;
-
             var distX:Number = player2.x - player1.x;
             var distY:Number = player2.z - player1.z;
             var dist:Number = Math.sqrt(distX * distX + distY * distY);
 
-            trace(dist);
-
-            if (dist < player1.radius + player2.radius) {
+            if (dist < player1.radius * 2) {
 
                 //var tempX:Number = player1VX;
                 //var tempY:Number = player1VY;
@@ -272,12 +292,20 @@ package
 
                 // collision reaction
                 var vxTotal:Number = vx0 - vx1;
-                trace(vxTotal);
                 vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / (MASS + MASS);
                 vx1 = vxTotal + vx0;
 
-                x0 += vx0;
-                x1 += vx1;
+                //seperate them
+                //x0 += vx0;
+                //x1 += vx1;
+
+                // seperate them advanced
+                var absV:Number = Math.abs(vx0) + Math.abs(vx1);
+                var overlap:Number = (player1.radius + player2.radius)
+                    - Math.abs(vx0 - vx1);
+
+                x0 += vx0 / absV * overlap;
+                x1 += vx1 / absV * overlap;
 
                 // rotate positions back
                 var x0Final:Number = x0 * cos - y0 * sin;
@@ -298,6 +326,16 @@ package
                 player2VY = vy1 * cos + vx1 * sin;
 
             }
+
+            player1.x += player1VX;
+            player1.z -= player1VY;
+            player1.roll(player1VX * -.5);
+            player1.pitch(player1VY * -.5);
+
+            player2.x += player2VX;
+            player2.z -= player2VY;
+            player2.roll(player2VX * -.5);
+            player2.pitch(player2VY * -.5);
 
             if (player1.x < floor.x - floor.width / 2) {
                 player1.y -= GRAVITY;
@@ -328,18 +366,49 @@ package
             if (player1.y < floor.y) {
                 player1.y -= GRAVITY;
             }
+
             if (player2.y < floor.y) {
                 player2.y -= GRAVITY;
             }
-            view.render();
 
-            if(player2.y < -1000){
-               resetObjects(2);
+            if (player2.y < -1000) {
+                resetObjects(2);
             }
 
-            if(player1.y < -1000){
+            if (player1.y < -1000) {
                 resetObjects(1);
             }
+
+            view.render();
+        }
+
+        private function calculateScores(hit:Boolean):void {
+            if (hit == false) {
+                var p1:Number = (player1VX + player1VY) * 1;
+                var p2:Number = (player2VX + player2VY) * 1;
+
+                //trace("p1: " + p1 + " | " + "p2: " + p2);
+                //trace("player1: " + Math.abs(Math.round((player1VX + player1VY))));
+                //trace("player2: " + Math.abs(Math.round((player2VX + player2VY))));
+                //trace("");
+
+                if (p1 > p2) {
+                    model.calculateScores(p1 - p2, 0);
+                }
+                else if (p1 < p2) {
+                    model.calculateScores(0, p2 - p1);
+                }
+
+            }
+            else if (hit == true) {
+                if (p1 > p2) {
+                    model.calculateScores((p1 - p2) + 1000, 0);
+                }
+                else if (p1 < p2) {
+                    model.calculateScores(0, (p2 - p1) + 1000);
+                }
+            }
+
         }
 
         private function handleRemoteStatus(e:RemoteStatusEvent):void {
