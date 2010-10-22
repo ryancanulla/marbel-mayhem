@@ -42,18 +42,20 @@ package
     import flash.display.StageScaleMode;
     import flash.events.Event;
     import flash.events.TimerEvent;
+    import flash.geom.Point;
     import flash.utils.Dictionary;
 
     import net.hires.debug.Stats;
 
+    import org.osmf.events.TimeEvent;
     import org.osmf.net.StreamingURLResource;
 
     [SWF(width="1280", height="800", framerate="30")]
     public class Main extends Sprite
     {
         private var view:View3D;
+        private var player0:Sphere;
         private var player1:Sphere;
-        private var player2:Sphere;
         private var floor:Plane;
         private var world:Skybox;
         private var gameMaterials:GameMaterials;
@@ -64,6 +66,7 @@ package
         public var players:Dictionary;
 
         private var scoreboard:Scoreboard;
+        private var countdown:CountDown;
 
         private var service:LitlService;
 
@@ -87,7 +90,7 @@ package
         private static const SPEED:Number = 3;
         private static const GRAVITY:Number = 20;
         private static const SPRING:Number = .2;
-        private static const MASS:Number = 2;
+        private static const MASS:Number = 1;
 
         public function Main() {
             stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -100,9 +103,7 @@ package
 
         private function init():void {
             model.addEventListener("RenderMarbleEvent", renderScreen);
-            model.addEventListener("StartNewGameMarbleEvent", newGame);
-
-            model.startNewGame();
+            countdown = new CountDown(this.stage);
 
             remoteIds = new Array();
             models = new Array();
@@ -115,6 +116,7 @@ package
             remoteManager.addEventListener(RemoteStatusEvent.REMOTE_STATUS, handleRemoteStatus);
 
             service.connect("3d", "3d", "1.3d", false);
+            service.addEventListener(UserInputMessage.GO_BUTTON_RELEASED, startNewGame);
 
             createView();
             createScene();
@@ -139,7 +141,7 @@ package
             view.x = 640;
             view.y = 400;
             view.camera.y = 400;
-            //view.camera.rotationY = 90;
+            // view.camera.rotationY = 45;
             view.camera.z = -1500;
             view.camera.lookAt(view.scene.position);
 
@@ -168,23 +170,23 @@ package
         }
 
         private function createPlayers():void {
-            var bmp:BitmapData = new BitmapData(200, 200);
-            bmp.perlinNoise(200, 200, 2, Math.random(), true, true);
-            var mat:BitmapMaterial = new BitmapMaterial(bmp);
+            //var bmp:BitmapData = new BitmapData(200, 200);
+            //bmp.perlinNoise(200, 200, 2, Math.random(), true, true);
+            //var mat:BitmapMaterial = new BitmapMaterial(bmp);
+
+            player0 = new Sphere();
+            player0.material = new WireColorMaterial(0xBE1E2D);
+            player0.segmentsH = 15;
+            player0.segmentsW = 15;
+            player0.radius = 40;
 
             player1 = new Sphere();
-            player1.material = new WireColorMaterial(0xBE1E2D);
+            player1.material = new WireColorMaterial(0x004518);
             player1.segmentsH = 15;
             player1.segmentsW = 15;
             player1.radius = 40;
 
-            player2 = new Sphere();
-            player2.material = new WireColorMaterial(0x004518);
-            player2.segmentsH = 15;
-            player2.segmentsW = 15;
-            player2.radius = 40;
-
-            models.push({ model: player1 }, { model: player2 });
+            models.push({ model: player0 }, { model: player1 });
         }
 
         private function createFloor():void {
@@ -220,32 +222,35 @@ package
             view.scene.addChild(world);
         }
 
-        private function resetObjects(player:Number = 0):void {
-            if (player == 1) {
-                player1.x = 150;
-                player1.z = -400;
-                player1.y = player1.radius + 5;
-            }
-            else if (player == 2) {
-                player2.x = -50;
-                player2.z = -400;
-                player2.y = player2.radius + 5;
+        private function startNewGame(e:UserInputMessage):void {
+            if (model.gameInProgress) {
+                resetObjects(3);
+                model.startNewGame();
             }
             else {
-                player1.x = -150;
-                player1.z = -400;
-                player1.y = player1.radius + 5;
-                player2.x = -50;
-                player2.z = -400;
-                player2.y = player2.radius + 5;
+                model.startNewGame();
             }
         }
 
-        private function newGame(e:Event):void {
-            var countdown:CountDown = new CountDown(this.stage);
-            countdown.x = stage.stageWidth / 2 - countdown.width;
-            countdown.y = stage.stageHeight / 2;
-            addChild(countdown);
+        private function resetObjects(player:Number = 0):void {
+            if (player == 0) {
+                player0.x = 150;
+                player0.z = -400;
+                player0.y = player0.radius + 5;
+            }
+            else if (player == 1) {
+                player1.x = -50;
+                player1.z = -400;
+                player1.y = player1.radius + 5;
+            }
+            else {
+                player0.x = 150;
+                player0.z = -400;
+                player0.y = player0.radius + 5;
+                player1.x = -50;
+                player1.z = -400;
+                player1.y = player1.radius + 5;
+            }
         }
 
         protected function renderScreen(e:Event):void {
@@ -261,81 +266,151 @@ package
             player2VX *= FRICTION;
             player2VY *= FRICTION;
 
-            var distX:Number = player2.x - player1.x;
-            var distY:Number = player2.z - player1.z;
-            var dist:Number = Math.sqrt(distX * distX + distY * distY);
+            var distX:Number = player1.x - player0.x;
+            var distZ:Number = player1.z - player0.z;
+            //trace("x: " + distX);
+            //trace("z: " + distZ);
+            var dist:Number = Math.sqrt(distX * distX + distZ * distZ);
 
-            if (dist < player1.radius * 2) {
+            //trace(player0.radius * 2);
 
-                //var tempX:Number = player1VX;
-                //var tempY:Number = player1VY;
-                //player1VX = player2VX * 1.5;
-                //player1VY = player2VY * 1.5;
-                //player2VX = tempX * 1.5;
-                //player2VY = tempY * 1.5;
+            if (dist < player0.radius * 2) {
+                calculateScores(true);
 
-                var angle:Number = Math.atan2(distY, distX);
-                var sin:Number = Math.sin(angle);
-                var cos:Number = Math.cos(angle);
+                var tempX:Number = player1VX;
+                var tempY:Number = player1VY;
+                player1VX = player2VX * 1.5;
+                player1VY = player2VY * 1.5;
+                player2VX = tempX * 1.5;
+                player2VY = tempY * 1.5;
 
-                // rotate player positions
-                var x0:Number = 0;
-                var y0:Number = 0;
-                var x1:Number = distX * cos + distY * sin;
-                var y1:Number = distY * cos - distX * sin;
+//                var angle:Number = Math.atan2(distZ, distX);
+//                var sin:Number = Math.sin(angle);
+//                var cos:Number = Math.cos(angle);
+//
+//                // rotate player positions
+//                var x0:Number = 0;
+//                var y0:Number = 0;
+//                var x1:Number = distX * cos + distZ * sin;
+//                var y1:Number = distZ * cos - distX * sin;
+//
+//                // rotate velocities
+//                var vx0:Number = player1VX * cos + player1VY * sin;
+//                var vy0:Number = player1VY * cos - player1VX * sin;
+//                var vx1:Number = player2VX * cos + player2VY * sin;
+//                var vy1:Number = player2VY * cos - player2VX * sin;
+//
+//                // collision reaction
+//                var vxTotal:Number = vx0 - vx1;
+//                vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / (MASS + MASS);
+//                vx1 = vxTotal + vx0;
+//
+//                //seperate them
+//                //x0 += vx0;
+//                //x1 += vx1;
+//
+//                // seperate them advanced
+//                var absV:Number = Math.abs(vx0) + Math.abs(vx1);
+//                var overlap:Number = (player0.radius + player1.radius)
+//                    - Math.abs(x0 - x1);
+//
+//                x0 += vx0 / absV * overlap;
+//                x1 += vx1 / absV * overlap;
+//
+//                // rotate positions back
+//                var x0Final:Number = x0 * cos - y0 * sin;
+//                var y0Final:Number = y0 * cos + x0 * sin;
+//                var x1Final:Number = x1 * cos - y1 * sin;
+//                var y1Final:Number = y1 * cos + x1 * sin;
+//
+//                // adjust positions to actual screen positions
+//                player1.x = player0.x + x1Final;
+//                player1.z = player0.z + y1Final;
+//                player0.x = player0.x + x0Final;
+//                player0.z = player0.z + y0Final;
+//
+//                // rotate the velocities back
+//                player1VX = vx0 * cos - vy0 * sin;
+//                player1VY = vy0 * cos + vx0 * sin;
+//                player2VX = vx1 * cos - vy1 * sin;
+//                player2VY = vy1 * cos + vx1 * sin;
 
-                // rotate velocities
-                var vx0:Number = player1VX * cos + player1VY * sin;
-                var vy0:Number = player1VY * cos - player1VX * sin;
-                var vx1:Number = player2VX * cos + player2VY * sin;
-                var vy1:Number = player2VY * cos - player2VX * sin;
-
-                // collision reaction
-                var vxTotal:Number = vx0 - vx1;
-                vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / (MASS + MASS);
-                vx1 = vxTotal + vx0;
-
-                //seperate them
-                //x0 += vx0;
-                //x1 += vx1;
-
-                // seperate them advanced
-                var absV:Number = Math.abs(vx0) + Math.abs(vx1);
-                var overlap:Number = (player1.radius + player2.radius)
-                    - Math.abs(vx0 - vx1);
-
-                x0 += vx0 / absV * overlap;
-                x1 += vx1 / absV * overlap;
-
-                // rotate positions back
-                var x0Final:Number = x0 * cos - y0 * sin;
-                var y0Final:Number = y0 * cos + x0 * sin;
-                var x1Final:Number = x1 * cos - y1 * sin;
-                var y1Final:Number = y1 * cos + x1 * sin;
-
-                // adjust positions to actual screen positions
-                player2.x = player1.x + x1Final;
-                player2.z = player1.z + y1Final;
-                player1.x = player1.x + x0Final;
-                player1.z = player1.z + y0Final;
-
-                // rotate the velocities back
-                player1VX = vx0 * cos - vy0 * sin;
-                player1VY = vy0 * cos + vx0 * sin;
-                player2VX = vx1 * cos - vy1 * sin;
-                player2VY = vy1 * cos + vx1 * sin;
+//                var angle:Number = Math.atan2(distZ, distX);
+//                var sin:Number = Math.sin(angle);
+//                var cos:Number = Math.cos(angle);
+//
+//                // rotate player positions
+//                var pos0:Point = new Point(0, 0);
+//                var pos1:Point = rotate(distX, distZ, sin, cos, true);
+//
+//                var x1:Number = distX * cos + distZ * sin;
+//                var y1:Number = distZ * cos - distX * sin;
+//
+//                // rotate velocities
+//                var vx0:Number = player1VX * cos + player1VY * sin;
+//                var vy0:Number = player1VY * cos - player1VX * sin;
+//                var vx1:Number = player2VX * cos + player2VY * sin;
+//                var vy1:Number = player2VY * cos - player2VX * sin;
+//
+//                // collision reaction
+//                var vxTotal:Number = vx0 - vx1;
+//                vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / (MASS + MASS);
+//                vx1 = vxTotal + vx0;
+//
+//                //seperate them
+//                //x0 += vx0;
+//                //x1 += vx1;
+//
+//                // seperate them advanced
+//                var absV:Number = Math.abs(vx0) + Math.abs(vx1);
+//                var overlap:Number = (player0.radius + player1.radius)
+//                    - Math.abs(x0 - x1);
+//
+//                x0 += vx0 / absV * overlap;
+//                x1 += vx1 / absV * overlap;
+//
+//                // rotate positions back
+//                var x0Final:Number = x0 * cos - y0 * sin;
+//                var y0Final:Number = y0 * cos + x0 * sin;
+//                var x1Final:Number = x1 * cos - y1 * sin;
+//                var y1Final:Number = y1 * cos + x1 * sin;
+//
+//                // adjust positions to actual screen positions
+//                player1.x = player0.x + x1Final;
+//                player1.z = player0.z + y1Final;
+//                player0.x = player0.x + x0Final;
+//                player0.z = player0.z + y0Final;
+//
+//                // rotate the velocities back
+//                player1VX = vx0 * cos - vy0 * sin;
+//                player1VY = vy0 * cos + vx0 * sin;
+//                player2VX = vx1 * cos - vy1 * sin;
+//                player2VY = vy1 * cos + vx1 * sin;
 
             }
 
-            player1.x += player1VX;
-            player1.z -= player1VY;
-            player1.roll(player1VX * -.5);
-            player1.pitch(player1VY * -.5);
+            player0.x += player1VX;
+            player0.z -= player1VY;
+            player0.roll(player1VX * -.5);
+            player0.pitch(player1VY * -.5);
 
-            player2.x += player2VX;
-            player2.z -= player2VY;
-            player2.roll(player2VX * -.5);
-            player2.pitch(player2VY * -.5);
+            player1.x += player2VX;
+            player1.z -= player2VY;
+            player1.roll(player2VX * -.5);
+            player1.pitch(player2VY * -.5);
+
+            if (player0.x < floor.x - floor.width / 2) {
+                player0.y -= GRAVITY;
+            }
+            else if (player0.x > floor.x + floor.width / 2) {
+                player0.y -= GRAVITY;
+            }
+            else if (player0.z > floor.z + floor.height / 2) {
+                player0.y -= GRAVITY;
+            }
+            else if (player0.z < floor.z - floor.height / 2) {
+                player0.y -= GRAVITY;
+            }
 
             if (player1.x < floor.x - floor.width / 2) {
                 player1.y -= GRAVITY;
@@ -350,36 +425,37 @@ package
                 player1.y -= GRAVITY;
             }
 
-            if (player2.x < floor.x - floor.width / 2) {
-                player2.y -= GRAVITY;
-            }
-            else if (player2.x > floor.x + floor.width / 2) {
-                player2.y -= GRAVITY;
-            }
-            else if (player2.z > floor.z + floor.height / 2) {
-                player2.y -= GRAVITY;
-            }
-            else if (player2.z < floor.z - floor.height / 2) {
-                player2.y -= GRAVITY;
+            if (player0.y < floor.y) {
+                player0.y -= GRAVITY;
             }
 
             if (player1.y < floor.y) {
                 player1.y -= GRAVITY;
             }
 
-            if (player2.y < floor.y) {
-                player2.y -= GRAVITY;
-            }
-
-            if (player2.y < -1000) {
+            if (player1.y < -1000) {
                 resetObjects(2);
             }
 
-            if (player1.y < -1000) {
+            if (player0.y < -1000) {
                 resetObjects(1);
             }
 
             view.render();
+        }
+
+        private function rotate(x:Number, y:Number, sin:Number, cos:Number, reverse:Boolean):Point {
+            var result:Point = new Point();
+
+            if (reverse) {
+                result.x = x * cos + y * sin;
+                result.y = y * cos - x * sin;
+            }
+            else {
+                result.x = y * cos - y * sin;
+                result.y = y * cos + x * sin;
+            }
+            return result;
         }
 
         private function calculateScores(hit:Boolean):void {
@@ -437,11 +513,11 @@ package
 
         private function handleAccelerometerEventFactory(remote:IRemoteControl):Function {
             return function(e:com.litl.sdk.event.AccelerometerEvent):void {
-                if (players[remote.id].model == player1) {
+                if (players[remote.id].model == player0) {
                     player1VX += e.accelerationY * SPEED;
                     player1VY += e.accelerationX * SPEED;
                 }
-                else if (players[remote.id].model == player2) {
+                else if (players[remote.id].model == player1) {
                     player2VX += e.accelerationY * SPEED;
                     player2VY += e.accelerationX * SPEED;
                 }
@@ -466,3 +542,4 @@ package
         }
     }
 }
+

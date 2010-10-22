@@ -36,7 +36,7 @@ package com.litl.marbelmayhem.model
             _player2Score = 0;
             _gameInProgress = false;
 
-            countdown = new Timer(1000, 4);
+            countdown = new Timer(1000, 5);
             countdown.addEventListener(TimerEvent.TIMER_COMPLETE, resumeGame);
 
             gameTimer = new Timer(1000, 60 * 3);
@@ -46,10 +46,10 @@ package com.litl.marbelmayhem.model
             gameRenderClock = new Timer(33.3, int.MAX_VALUE);
             gameRenderClock.addEventListener(TimerEvent.TIMER, renderTimer);
             gameRenderClock.start();
-
         }
 
         public function startNewGame():void {
+            _gameInProgress = false;
             dispatchEvent(new Event("StartNewGameMarbleEvent", true));
             countdown.reset();
             countdown.start();
