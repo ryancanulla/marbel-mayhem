@@ -1,5 +1,6 @@
-package com.litl.marbelmayhem
+package com.litl.marbelmayhem.views
 {
+    import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
 
     import flash.display.Loader;
@@ -34,8 +35,8 @@ package com.litl.marbelmayhem
 
         private function init():void {
             createChildren();
-            model.addEventListener("ScoreChangedMarbleEvent", updateProperties);
-            model.addEventListener("TimerTickMarbleEvent", updateProperties);
+            model.addEventListener(MarbleEvent.SCORE_CHANGED, updateProperties);
+            model.addEventListener(MarbleEvent.TIMER_TICK, updateProperties);
         }
 
         private function createChildren():void {

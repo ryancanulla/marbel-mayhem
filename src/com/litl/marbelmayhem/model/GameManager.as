@@ -39,9 +39,10 @@ package com.litl.marbelmayhem.model
             countdown = new Timer(1000, 5);
             countdown.addEventListener(TimerEvent.TIMER_COMPLETE, resumeGame);
 
-            gameTimer = new Timer(1000, 60 * 3);
+            gameTimer = new Timer(1000, 10 * 1);
             timeLeft = gameTimer.repeatCount;
             gameTimer.addEventListener(TimerEvent.TIMER, secondTimer);
+            gameTimer.addEventListener(TimerEvent.TIMER_COMPLETE, gameOver);
 
             gameRenderClock = new Timer(33.3, int.MAX_VALUE);
             gameRenderClock.addEventListener(TimerEvent.TIMER, renderTimer);
@@ -50,7 +51,7 @@ package com.litl.marbelmayhem.model
 
         public function startNewGame():void {
             _gameInProgress = false;
-            dispatchEvent(new Event("StartNewGameMarbleEvent", true));
+            dispatchEvent(new Event(MarbleEvent.START_NEW_GAME, true));
             countdown.reset();
             countdown.start();
 
@@ -68,20 +69,24 @@ package com.litl.marbelmayhem.model
             gameTimer.start();
         }
 
+        private function gameOver(e:TimerEvent):void {
+            dispatchEvent(new Event(MarbleEvent.GAME_OVER, true));
+        }
+
         private function secondTimer(e:TimerEvent):void {
             timeLeft--;
-            dispatchEvent(new Event("TimerTickMarbleEvent", true));
+            dispatchEvent(new Event(MarbleEvent.TIMER_TICK, true));
         }
 
         private function renderTimer(e:TimerEvent):void {
-            dispatchEvent(new Event("RenderMarbleEvent", true));
+            dispatchEvent(new Event(MarbleEvent.RENDER, true));
         }
 
         public function calculateScores(player1:Number, player2:Number):void {
             _player1Score += player1;
             _player2Score += player2;
 
-            dispatchEvent(new Event("ScoreChangedMarbleEvent", true));
+            dispatchEvent(new Event(MarbleEvent.SCORE_CHANGED, true));
         }
 
         public function get player1Score():Number {

@@ -1,4 +1,4 @@
-package com.litl.marbelmayhem
+package com.litl.marbelmayhem.utils
 {
 
     public class FontManager

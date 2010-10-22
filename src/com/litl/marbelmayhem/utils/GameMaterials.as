@@ -1,4 +1,4 @@
-package com.litl.marbelmayhem
+package com.litl.marbelmayhem.utils
 {
     import flash.display.Bitmap;
 
