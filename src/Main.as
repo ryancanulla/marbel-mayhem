@@ -105,6 +105,8 @@ package
             model.addEventListener("RenderMarbleEvent", renderScreen);
             countdown = new CountDown(this.stage);
 
+            model.startNewGame();
+
             remoteIds = new Array();
             models = new Array();
             players = new Dictionary();
@@ -224,7 +226,7 @@ package
 
         private function startNewGame(e:UserInputMessage):void {
             if (model.gameInProgress) {
-                resetObjects(3);
+                //resetObjects(3);
                 model.startNewGame();
             }
             else {
@@ -234,7 +236,7 @@ package
 
         private function resetObjects(player:Number = 0):void {
             if (player == 0) {
-                player0.x = 150;
+                player0.x = -150;
                 player0.z = -400;
                 player0.y = player0.radius + 5;
             }
@@ -268,11 +270,7 @@ package
 
             var distX:Number = player1.x - player0.x;
             var distZ:Number = player1.z - player0.z;
-            //trace("x: " + distX);
-            //trace("z: " + distZ);
             var dist:Number = Math.sqrt(distX * distX + distZ * distZ);
-
-            //trace(player0.radius * 2);
 
             if (dist < player0.radius * 2) {
                 calculateScores(true);
@@ -434,11 +432,13 @@ package
             }
 
             if (player1.y < -1000) {
-                resetObjects(2);
+                resetObjects(1);
+                model.calculateScores(0, 200);
             }
 
             if (player0.y < -1000) {
-                resetObjects(1);
+                resetObjects(0);
+                model.calculateScores(200, 0);
             }
 
             view.render();
@@ -459,14 +459,9 @@ package
         }
 
         private function calculateScores(hit:Boolean):void {
-            if (hit == false) {
-                var p1:Number = (player1VX + player1VY) * 1;
-                var p2:Number = (player2VX + player2VY) * 1;
-
-                //trace("p1: " + p1 + " | " + "p2: " + p2);
-                //trace("player1: " + Math.abs(Math.round((player1VX + player1VY))));
-                //trace("player2: " + Math.abs(Math.round((player2VX + player2VY))));
-                //trace("");
+            if (hit == true) {
+                var p2:Number = Math.abs(Math.round((player1VX + player1VY) * 10));
+                var p1:Number = Math.abs(Math.round((player2VX + player2VY) * 10));
 
                 if (p1 > p2) {
                     model.calculateScores(p1 - p2, 0);
@@ -476,13 +471,19 @@ package
                 }
 
             }
-            else if (hit == true) {
-                if (p1 > p2) {
-                    model.calculateScores((p1 - p2) + 1000, 0);
-                }
-                else if (p1 < p2) {
-                    model.calculateScores(0, (p2 - p1) + 1000);
-                }
+            else if (hit == false) {
+//                var center:Point = new Point(floor.x / 2, floor.height / 2);
+//
+//                var dist0X:Number = player0.x - center.x;
+//                var dist0Z:Number = player0.z - center.y;
+//                var dist0:Number = Math.sqrt(dist0X * dist0X + dist0Z * dist0Z);
+//
+//                var dist1X:Number = player1.x - center.x;
+//                var dist1Z:Number = player1.z - center.y;
+//                var dist1:Number = Math.sqrt(dist1X * dist1X + dist1Z * dist1Z);
+//
+//                trace("player 1: " + dist0);
+//                trace("player 2: " + dist1);
             }
 
         }
