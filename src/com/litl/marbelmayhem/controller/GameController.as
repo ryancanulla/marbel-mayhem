@@ -253,12 +253,14 @@ package com.litl.marbelmayhem.controller
 
             if (_view.player1.y < -1000) {
                 resetObjects(1);
-                model.calculateScores(0, 200);
+                model.addToScores(0, 200);
+                model.playerDied(1);
             }
 
             if (_view.player0.y < -1000) {
                 resetObjects(0);
-                model.calculateScores(200, 0);
+                model.addToScores(200, 0);
+                model.playerDied(2);
             }
 
             _view.view.render();
@@ -354,10 +356,12 @@ package com.litl.marbelmayhem.controller
                 var p1:Number = Math.abs(Math.round((player2VX + player2VY) * 10));
 
                 if (p1 > p2) {
-                    model.calculateScores(p1 - p2, 0);
+                    model.addToScores(p1 - p2, 0);
+                    model.addWinningCollision(1);
                 }
                 else if (p1 < p2) {
-                    model.calculateScores(0, p2 - p1);
+                    model.addToScores(0, p2 - p1);
+                    model.addWinningCollision(2);
                 }
             }
             else if (hit == false) {

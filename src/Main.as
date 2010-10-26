@@ -21,12 +21,13 @@ package
     import away3d.primitives.Skybox;
     import away3d.primitives.Sphere;
 
-    import com.litl.marbelmayhem.utils.FontManager;
-    import com.litl.marbelmayhem.utils.GameMaterials;
-    import com.litl.marbelmayhem.views.Scoreboard;
     import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.model.GameManager;
+    import com.litl.marbelmayhem.utils.FontManager;
+    import com.litl.marbelmayhem.utils.GameMaterials;
     import com.litl.marbelmayhem.views.CountDown;
+    import com.litl.marbelmayhem.views.GameResults;
+    import com.litl.marbelmayhem.views.Scoreboard;
     import com.litl.sdk.event.RemoteStatusEvent;
     import com.litl.sdk.message.UserInputMessage;
     import com.litl.sdk.richinput.Accelerometer;
@@ -63,6 +64,7 @@ package
 
         private var scoreboard:Scoreboard;
         private var countdown:CountDown;
+        private var gameResults:GameResults;
 
         private var controller:GameController;
 
@@ -79,6 +81,8 @@ package
             controller.view = this;
 
             countdown = new CountDown(this.stage);
+            //gameResults = new GameResults(this.stage);
+
             gameMaterials = new GameMaterials();
 
             createView();

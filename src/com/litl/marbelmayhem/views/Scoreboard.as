@@ -26,6 +26,8 @@ package com.litl.marbelmayhem.views
         private var player2Icon:Loader;
         private var player1Score:TextField;
         private var player2Score:TextField;
+        private var player1Life:PlayerOneLife;
+        private var player2Life:PlayerTwoLife;
 
         public function Scoreboard(e:Stage) {
             super();
@@ -78,6 +80,9 @@ package com.litl.marbelmayhem.views
             player1Score.setTextFormat(scoreFormat);
             addChild(player1Score);
 
+            player1Life = new PlayerOneLife();
+            addChild(player1Life);
+
             player2Icon = new Loader;
             player2Icon.load(new URLRequest("../assets/scoreboard/playerTwoIcon.png"));
             addChild(player2Icon);
@@ -85,15 +90,18 @@ package com.litl.marbelmayhem.views
             player2Score = new TextField();
             player2Score.defaultTextFormat = scoreFormat;
             player2Score.setTextFormat(scoreFormat);
-            addChild(player2Score)
+            addChild(player2Score);
+
+            player2Life = new PlayerTwoLife();
+            addChild(player2Life);
 
             updateLayout();
             updateProperties();
         }
 
         private function updateProperties(e:Event = null):void {
-            player1Score.text = model.player1Score.toString();
-            player2Score.text = model.player2Score.toString();
+            player1Score.text = model.player1.score.toString();
+            player2Score.text = model.player2.score.toString();
 
             timeDisplay.text = model.time;
         }
@@ -114,12 +122,18 @@ package com.litl.marbelmayhem.views
             player1Score.x = 890;
             player1Score.y = 7;
 
+            player1Life.x = 750;
+            player1Life.y = 40;
+
             player2Icon.x = 1000;
             player2Icon.y = 10;
 
             player2Score.width = 300;
             player2Score.x = 1145;
             player2Score.y = 7;
+
+            player2Life.x = 1000;
+            player2Life.y = 40;
         }
     }
 }

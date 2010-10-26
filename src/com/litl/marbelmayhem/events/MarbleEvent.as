@@ -7,6 +7,7 @@ package com.litl.marbelmayhem.events
         public static const START_NEW_GAME:String = "StartNewGameMarbleEvent";
         public static const GAME_PAUSED:String = "GamePausedMarbelEvent";
         public static const GAME_OVER:String = "GamePausedMarbelEvent";
+        public static const PLAYER_DIED:String = "PlayerDiedMarbelEvent";
         public static const SCORE_CHANGED:String = "ScoreChangedMarbleEvent";
         public static const TIMER_TICK:String = "TimerTickMarbleEvent";
         public static const RENDER:String = "RenderMarbleEvent";
