@@ -1,8 +1,13 @@
 package com.litl.marbelmayhem.model
 {
+    import com.litl.helpers.richinput.remotehandler.RemoteHandlerManager;
     import com.litl.marbelmayhem.events.MarbleEvent;
+    import com.litl.marbelmayhem.model.service.LitlViewManager;
     import com.litl.marbelmayhem.vo.Player;
+    import com.litl.sdk.enum.View;
+    import com.litl.sdk.service.LitlService;
 
+    import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.TimerEvent;
@@ -14,14 +19,17 @@ package com.litl.marbelmayhem.model
         private var _player1:Player;
         private var _player2:Player;
         private var _gameInProgress:Boolean;
+        private var _gameViewState:String;
         private var gameTimer:Timer;
         private var gameRenderClock:Timer;
         private var timeLeft:Number;
+        private var service:LitlViewManager;
         public var maxLives:Number = 5;
 
         public var countdown:Timer;
 
         public function GameManager(enforcer:SingletonEnforcer) {
+            super();
             init();
         }
 
@@ -69,6 +77,8 @@ package com.litl.marbelmayhem.model
 
             player1.score = 0;
             player2.score = 0;
+
+            dispatchEvent(new MarbleEvent(MarbleEvent.SCORE_CHANGED));
         }
 
         private function checkForRemainingLives():void {
@@ -152,6 +162,16 @@ package com.litl.marbelmayhem.model
                 return minute + ":" + seconds;
             }
         }
+
+        public function get gameViewState():String {
+            return _gameViewState;
+        }
+
+        public function set gameViewState(value:String):void {
+            _gameViewState = value;
+            dispatchEvent(new MarbleEvent(MarbleEvent.RESET_LAYOUT));
+        }
+
     }
 }
 

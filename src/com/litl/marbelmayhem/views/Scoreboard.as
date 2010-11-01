@@ -13,9 +13,9 @@ package com.litl.marbelmayhem.views
     import flash.text.TextField;
     import flash.text.TextFormat;
 
-    public class Scoreboard extends Sprite
+    public class Scoreboard extends ViewBase
     {
-        private var _stage:Stage;
+        private var _view:ViewBase;
         private var model:GameManager = GameManager.getInstance();
 
         private var background:Sprite;
@@ -29,9 +29,9 @@ package com.litl.marbelmayhem.views
         private var player1Life:PlayerOneLife;
         private var player2Life:PlayerTwoLife;
 
-        public function Scoreboard(e:Stage) {
+        public function Scoreboard(e:ViewBase) {
             super();
-            _stage = e;
+            _view = e;
             init();
         }
 
@@ -44,7 +44,7 @@ package com.litl.marbelmayhem.views
         private function createChildren():void {
             background = new Sprite();
             background.graphics.beginFill(0x333333);
-            background.graphics.drawRect(0, 0, _stage.stageWidth, _stage.stageHeight * .1);
+            background.graphics.drawRect(0, 0, 1280, 800 * .1);
             addChild(background);
 
             logo = new Loader;

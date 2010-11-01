@@ -11,6 +11,7 @@ package com.litl.marbelmayhem.events
         public static const SCORE_CHANGED:String = "ScoreChangedMarbleEvent";
         public static const TIMER_TICK:String = "TimerTickMarbleEvent";
         public static const RENDER:String = "RenderMarbleEvent";
+        public static const RESET_LAYOUT:String = "ResetLayoutMarbleEvent";
 
         public function MarbleEvent(type:String, bubbles:Boolean = true, cancelable:Boolean = false) {
             super(type, bubbles, cancelable);
