@@ -24,7 +24,6 @@ package com.litl.marbelmayhem.model.service
         }
 
         protected function setView(e:ViewChangeMessage):void {
-
             // Remove the current view from the display list.
             if (currentView && contains(currentView)) {
                 removeChild(currentView);
