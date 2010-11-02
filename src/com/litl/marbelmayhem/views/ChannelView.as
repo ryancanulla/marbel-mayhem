@@ -10,7 +10,9 @@ package com.litl.marbelmayhem.views
     import away3d.primitives.Sphere;
 
     import com.litl.marbelmayhem.controller.GameController;
+    import com.litl.marbelmayhem.model.GameManager;
     import com.litl.marbelmayhem.utils.GameMaterials;
+    import com.litl.marbelmayhem.vo.Player;
 
     import flash.display.Sprite;
     import flash.events.Event;
@@ -18,6 +20,7 @@ package com.litl.marbelmayhem.views
     public class ChannelView extends ViewBase
     {
         private var controller:GameController;
+        private var model:GameManager;
         public var gameMaterials:GameMaterials;
         public var awayWorld:View3D;
         public var player0:Sphere;
@@ -30,6 +33,7 @@ package com.litl.marbelmayhem.views
             super();
 
             controller = GameController.getInstance();
+            model = GameManager.getInstance();
             gameMaterials = new GameMaterials();
 
             createView();
@@ -62,24 +66,23 @@ package com.litl.marbelmayhem.views
         }
 
         protected function createScoreboard():void {
-            scoreboard = new Scoreboard(this);
-            addChild(scoreboard);
+            //scoreboard = new Scoreboard(this);
+            //addChild(scoreboard);
         }
 
         private function createPlayers():void {
-            player0 = new Sphere();
-            player0.material = new WireColorMaterial(0x004518);
-            player0.segmentsH = 15;
-            player0.segmentsW = 15;
-            player0.radius = 40;
+            for (var i:uint = 0; i < model.playersInGame.length; i++) {
+                var player:Player = model.playersInGame[i] as Player;
+                player.material = new WireColorMaterial(0x004518); // WireColorMaterial(0xBE1E2D);
+                player.segmentsH = 15;
+                player.segmentsW = 15;
+                player.x = floor.x + (Math.random() * 400);
+                player.y = floor.y + 50;
+                player.z = floor.z;
+                player.radius = 40;
 
-            player1 = new Sphere();
-            player1.material = new WireColorMaterial(0xBE1E2D);
-            player1.segmentsH = 15;
-            player1.segmentsW = 15;
-            player1.radius = 40;
-
-            controller.models.push({ model: player0 }, { model: player1 });
+                awayWorld.scene.addChild(player);
+            }
         }
 
         private function createFloor():void {

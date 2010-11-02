@@ -1,5 +1,6 @@
 package com.litl.marbelmayhem.model.service
 {
+    import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.views.CardView;
     import com.litl.marbelmayhem.views.ChannelView;
     import com.litl.marbelmayhem.views.ViewBase;
@@ -14,6 +15,8 @@ package com.litl.marbelmayhem.model.service
     public class LitlViewManager extends Sprite
     {
         private var _service:LitlService;
+        private var _currentViewState:String;
+        protected var controller:GameController = GameController.getInstance();
         protected var _view:Sprite;
         protected var currentView:ViewBase;
         protected var views:Dictionary;
@@ -43,20 +46,24 @@ package com.litl.marbelmayhem.model.service
 
                     if (currentView == null)
                         currentView = new ChannelView();
+                    _currentViewState = View.CHANNEL;
                     break;
                 case View.FOCUS:
 
                     if (currentView == null)
                         currentView = new ChannelView();
+                    _currentViewState = View.CHANNEL;
                     break;
                 case View.CARD:
 
                     if (currentView == null)
                         currentView = new CardView();
+                    _currentViewState = View.CARD;
                     break;
             }
 
             views[e.view] = currentView;
+            controller.currentView = currentView;
 
             currentView.setSize(e.width, e.height);
 
@@ -67,6 +74,10 @@ package com.litl.marbelmayhem.model.service
         public function set service(value:LitlService):void {
             _service = value;
             _service.addEventListener(ViewChangeMessage.VIEW_CHANGE, setView);
+        }
+
+        public function get currentViewState():String {
+            return _currentViewState;
         }
 
     }

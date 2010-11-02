@@ -3,6 +3,10 @@ package com.litl.marbelmayhem.controller
     import com.litl.helpers.richinput.remotehandler.RemoteHandlerManager;
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
+    import com.litl.marbelmayhem.model.service.LitlViewManager;
+    import com.litl.marbelmayhem.views.ChannelView;
+    import com.litl.marbelmayhem.views.ViewBase;
+    import com.litl.marbelmayhem.vo.Player;
     import com.litl.sdk.enum.View;
     import com.litl.sdk.event.RemoteStatusEvent;
     import com.litl.sdk.message.UserInputMessage;
@@ -20,7 +24,8 @@ package com.litl.marbelmayhem.controller
     public class GameController
     {
         private static var _instance:GameController;
-        private var _view:Sprite;
+        private var _currentView:ViewBase;
+        private var _viewManager:LitlViewManager;
         public var remoteIds:Array;
         public var models:Array;
         public var model:GameManager;
@@ -61,163 +66,89 @@ package com.litl.marbelmayhem.controller
 
         private function init():void {
             model = GameManager.getInstance();
-            //model.addEventListener(MarbleEvent.RENDER, renderScreen);
+            model.addEventListener(MarbleEvent.RENDER, renderScreen);
             model.addEventListener(MarbleEvent.GAME_OVER, showGameResults);
-
-            //remoteIds = new Array();
+            model.addEventListener(MarbleEvent.TOTAL_PLAYERS_CHANGED, updateTotalPlayersOnStage);
             models = new Array();
             //players = new Dictionary();
-
-            //service = new LitlService(_view);
-
-            //remoteManager = new RemoteManager(service);
-            //remoteHandlers = new Dictionary();
-            //remoteManager.addEventListener(RemoteStatusEvent.REMOTE_STATUS, handleRemoteStatus);
         }
 
-        /*protected function renderScreen(e:Event):void {
-           if (model.gameInProgress == false) {
-           _view.view.render();
-           return;
-           }
+        protected function movePlayer(player:Player):void {
+            player.vx *= FRICTION;
+            player.vy *= FRICTION;
 
-           calculateScores(false);
+            player.x += player.vx;
+            player.z -= player.vy;
+            player.roll(player.vx * -.5);
+            player.pitch(player.vy * -.5);
+        }
 
-           player1VX *= FRICTION;
-           player1VY *= FRICTION;
-           player2VX *= FRICTION;
-           player2VY *= FRICTION;
+        protected function updateTotalPlayersOnStage(e:Event):void {
 
-           var distX:Number = _view.player1.x - _view.player0.x;
-           var distZ:Number = _view.player1.z - _view.player0.z;
-           var dist:Number = Math.sqrt(distX * distX + distZ * distZ);
+            if (_viewManager.currentViewState == View.CARD) {
+                return;
+            }
+            else {
+                for (var i:uint = 0; i < model.playersInGame.length; i++) {
+                    var player:Player = model.playersInGame[i] as Player;
 
-           if (dist < _view.player0.radius * 2) {
-           calculateScores(true);
+                    if (player.isPlaying) {
+                    }
+                    else {
+                        ChannelView(_currentView).awayWorld.scene.addChild(player);
+                    }
+                }
+            }
 
-           var tempX:Number = player1VX;
-           var tempY:Number = player1VY;
-           player1VX = player2VX * 1.5;
-           player1VY = player2VY * 1.5;
-           player2VX = tempX * 1.5;
-           player2VY = tempY * 1.5;
+        }
 
-           //                var angle:Number = Math.atan2(distZ, distX);
-           //                var sin:Number = Math.sin(angle);
-           //                var cos:Number = Math.cos(angle);
-           //
-           //                // rotate player positions
-           //                var x0:Number = 0;
-           //                var y0:Number = 0;
-           //                var x1:Number = distX * cos + distZ * sin;
-           //                var y1:Number = distZ * cos - distX * sin;
-           //
-           //                // rotate velocities
-           //                var vx0:Number = player1VX * cos + player1VY * sin;
-           //                var vy0:Number = player1VY * cos - player1VX * sin;
-           //                var vx1:Number = player2VX * cos + player2VY * sin;
-           //                var vy1:Number = player2VY * cos - player2VX * sin;
-           //
-           //                // collision reaction
-           //                var vxTotal:Number = vx0 - vx1;
-           //                vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / (MASS + MASS);
-           //                vx1 = vxTotal + vx0;
-           //
-           //                //seperate them
-           //                //x0 += vx0;
-           //                //x1 += vx1;
-           //
-           //                // seperate them advanced
-           //                var absV:Number = Math.abs(vx0) + Math.abs(vx1);
-           //                var overlap:Number = (player0.radius + player1.radius)
-           //                    - Math.abs(x0 - x1);
-           //
-           //                x0 += vx0 / absV * overlap;
-           //                x1 += vx1 / absV * overlap;
-           //
-           //                // rotate positions back
-           //                var x0Final:Number = x0 * cos - y0 * sin;
-           //                var y0Final:Number = y0 * cos + x0 * sin;
-           //                var x1Final:Number = x1 * cos - y1 * sin;
-           //                var y1Final:Number = y1 * cos + x1 * sin;
-           //
-           //                // adjust positions to actual screen positions
-           //                player1.x = player0.x + x1Final;
-           //                player1.z = player0.z + y1Final;
-           //                player0.x = player0.x + x0Final;
-           //                player0.z = player0.z + y0Final;
-           //
-           //                // rotate the velocities back
-           //                player1VX = vx0 * cos - vy0 * sin;
-           //                player1VY = vy0 * cos + vx0 * sin;
-           //                player2VX = vx1 * cos - vy1 * sin;
-           //                player2VY = vy1 * cos + vx1 * sin;
+        protected function checkForCollision():Boolean {
+            if (model.playersInGame.length > 1) {
+                var distX:Number = Player(model.playersInGame[1]).x - Player(model.playersInGame[0]).x;
+                var distZ:Number = Player(model.playersInGame[1]).z - Player(model.playersInGame[0]).z;
+                var dist:Number = Math.sqrt(distX * distX + distZ * distZ);
 
-           //                var angle:Number = Math.atan2(distZ, distX);
-           //                var sin:Number = Math.sin(angle);
-           //                var cos:Number = Math.cos(angle);
-           //
-           //                // rotate player positions
-           //                var pos0:Point = new Point(0, 0);
-           //                var pos1:Point = rotate(distX, distZ, sin, cos, true);
-           //
-           //                var x1:Number = distX * cos + distZ * sin;
-           //                var y1:Number = distZ * cos - distX * sin;
-           //
-           //                // rotate velocities
-           //                var vx0:Number = player1VX * cos + player1VY * sin;
-           //                var vy0:Number = player1VY * cos - player1VX * sin;
-           //                var vx1:Number = player2VX * cos + player2VY * sin;
-           //                var vy1:Number = player2VY * cos - player2VX * sin;
-           //
-           //                // collision reaction
-           //                var vxTotal:Number = vx0 - vx1;
-           //                vx0 = ((MASS - MASS) * vx0 + 2 * MASS * vx1) / (MASS + MASS);
-           //                vx1 = vxTotal + vx0;
-           //
-           //                //seperate them
-           //                //x0 += vx0;
-           //                //x1 += vx1;
-           //
-           //                // seperate them advanced
-           //                var absV:Number = Math.abs(vx0) + Math.abs(vx1);
-           //                var overlap:Number = (player0.radius + player1.radius)
-           //                    - Math.abs(x0 - x1);
-           //
-           //                x0 += vx0 / absV * overlap;
-           //                x1 += vx1 / absV * overlap;
-           //
-           //                // rotate positions back
-           //                var x0Final:Number = x0 * cos - y0 * sin;
-           //                var y0Final:Number = y0 * cos + x0 * sin;
-           //                var x1Final:Number = x1 * cos - y1 * sin;
-           //                var y1Final:Number = y1 * cos + x1 * sin;
-           //
-           //                // adjust positions to actual screen positions
-           //                player1.x = player0.x + x1Final;
-           //                player1.z = player0.z + y1Final;
-           //                player0.x = player0.x + x0Final;
-           //                player0.z = player0.z + y0Final;
-           //
-           //                // rotate the velocities back
-           //                player1VX = vx0 * cos - vy0 * sin;
-           //                player1VY = vy0 * cos + vx0 * sin;
-           //                player2VX = vx1 * cos - vy1 * sin;
-           //                player2VY = vy1 * cos + vx1 * sin;
+                if (dist < Player(model.playersInGame[1]).radius * 2) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
 
-           }
+        protected function swapVelovities():void {
+            var tempX:Number = Player(model.playersInGame[0]).vx;
+            var tempY:Number = Player(model.playersInGame[0]).vy;
+            Player(model.playersInGame[0]).vx = Player(model.playersInGame[1]).vx * 1.5;
+            Player(model.playersInGame[0]).vy = Player(model.playersInGame[1]).vy * 1.5;
+            Player(model.playersInGame[1]).vx = tempX * 1.5;
+            Player(model.playersInGame[1]).vy = tempY * 1.5;
+        }
 
-           _view.player0.x += player1VX;
-           _view.player0.z -= player1VY;
-           _view.player0.roll(player1VX * -.5);
-           _view.player0.pitch(player1VY * -.5);
+        protected function renderScreen(e:Event):void {
+            if (_viewManager.currentViewState == View.CHANNEL && model.gameInProgress == true) {
+                trace(checkForCollision());
 
-           _view.player1.x += player2VX;
-           _view.player1.z -= player2VY;
-           _view.player1.roll(player2VX * -.5);
-           _view.player1.pitch(player2VY * -.5);
+                if (checkForCollision() == true) {
+                    //calculateScores(true);
+                    swapVelovities();
+                }
 
-           if (_view.player0.x < _view.floor.x - _view.floor.width / 2) {
+                //calculateScores(false);
+
+                for (var i:uint = 0; i < model.playersInGame.length; i++) {
+                    movePlayer(model.playersInGame[i] as Player);
+                }
+
+                // render the 3d scene
+                ChannelView(_currentView).awayWorld.render();
+            }
+
+        /*if (_view.player0.x < _view.floor.x - _view.floor.width / 2) {
            _view.player0.y -= GRAVITY;
            }
            else if (_view.player0.x > _view.floor.x + _view.floor.width / 2) {
@@ -263,8 +194,8 @@ package com.litl.marbelmayhem.controller
            model.playerDied(2);
            }
 
-           _view.view.render();
-         }*/
+         _view.view.render();*/
+        }
 
         private function startNewGame(e:UserInputMessage):void {
             if (model.gameInProgress) {
@@ -294,60 +225,6 @@ package com.litl.marbelmayhem.controller
            _view.player1.z = -4000;
            _view.player1.y = _view.player1.radius + 5;
            }
-         }*/
-
-        /*private function handleRemoteStatus(e:RemoteStatusEvent):void {
-           var remote:IRemoteControl = e.remote;
-
-           if (remote != null && remote.hasAccelerometer) {
-           var accelerometer:Accelerometer = remote.accelerometer;
-           var handler:Function;
-
-           if (e.remoteEnabled) {
-           handler = handleAccelerometerEventFactory(remote);
-           remoteHandlers[remote] = handler;
-           //accelerometer.setXSmoothingLevel("medium");
-           accelerometer.addEventListener(com.litl.sdk.event.AccelerometerEvent.UPDATE, handler);
-           addPlayer(remote.id);
-           }
-           else {
-           handler = remoteHandlers[remote];
-           delete remoteHandlers[remote];
-           accelerometer.removeEventListener(com.litl.sdk.event.AccelerometerEvent.UPDATE, handler);
-           handler = null;
-           removePlayer(remote.id);
-           }
-           }
-         }*/
-
-        /*private function handleAccelerometerEventFactory(remote:IRemoteControl):Function {
-           return function(e:com.litl.sdk.event.AccelerometerEvent):void {
-           if (players[remote.id].model == _view.player0) {
-           player1VX += e.accelerationY * SPEED;
-           player1VY += e.accelerationX * SPEED;
-           }
-           else if (players[remote.id].model == _view.player1) {
-           player2VX += e.accelerationY * SPEED;
-           player2VY += e.accelerationX * SPEED;
-           }
-           }
-           }
-
-           public function addPlayer(remoteId:String):void {
-           var position:Number = remoteIds.push(remoteId);
-           players[remoteId] = models[position % models.length];
-           _view.view.scene.addChild(players[remoteId].model);
-
-           resetObjects(position % models.length);
-           }
-
-           public function removePlayer(remoteId:String):void {
-           _view.view.scene.removeChild(players[remoteId].model);
-           //remove remote ID from list
-           remoteIds.splice(remoteIds.indexOf(remoteId), 1);
-           delete players[remoteId];
-
-           resetObjects();
          }*/
 
         /*private function calculateScores(hit:Boolean):void {
@@ -398,8 +275,12 @@ package com.litl.marbelmayhem.controller
             return result;
         }
 
-        public function set view(value:Sprite):void {
-            _view = value;
+        public function set currentView(value:ViewBase):void {
+            _currentView = value;
+        }
+
+        public function set viewManager(value:LitlViewManager):void {
+            _viewManager = value;
         }
 
     }

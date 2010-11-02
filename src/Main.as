@@ -42,12 +42,12 @@ package
             addChild(viewManager);
 
             controller = GameController.getInstance();
-            controller.view = this;
+            controller.viewManager = viewManager;
 
             //countdown = new CountDown(this.stage);
             //gameResults = new GameResults(this.stage);
 
-            //creatStatsMonitor();
+            creatStatsMonitor();
         }
 
         private function creatStatsMonitor():void {

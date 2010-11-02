@@ -20,6 +20,7 @@ package com.litl.marbelmayhem.model
         private var _player2:Player;
         private var _gameInProgress:Boolean;
         private var _gameViewState:String;
+        private var _playersInGame:Array;
         private var gameTimer:Timer;
         private var gameRenderClock:Timer;
         private var timeLeft:Number;
@@ -41,12 +42,8 @@ package com.litl.marbelmayhem.model
         }
 
         private function init():void {
-            _player1 = new Player();
-            _player2 = new Player();
-            _player1.lives = maxLives;
-            _player2.lives = maxLives;
-
-            _gameInProgress = false;
+            _playersInGame = new Array();
+            _gameInProgress = true;
 
             countdown = new Timer(1000, 5);
             countdown.addEventListener(TimerEvent.TIMER_COMPLETE, resumeGame);
@@ -72,18 +69,23 @@ package com.litl.marbelmayhem.model
         }
 
         private function resetPlayers():void {
-            player1.lives = maxLives;
-            player2.lives = maxLives;
 
-            player1.score = 0;
-            player2.score = 0;
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+                var player:Player = _playersInGame[i] as Player;
+                player.lives = maxLives;
+                player.score = 0;
+            }
 
             dispatchEvent(new MarbleEvent(MarbleEvent.SCORE_CHANGED));
         }
 
         private function checkForRemainingLives():void {
-            if (_player1.lives == 0 || _player2.lives == 0) {
-                dispatchEvent(new MarbleEvent(MarbleEvent.GAME_OVER));
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+                var player:Player = _playersInGame[i] as Player;
+
+                if (player.lives == 0) {
+                    dispatchEvent(new MarbleEvent(MarbleEvent.GAME_OVER));
+                }
             }
         }
 
@@ -111,28 +113,32 @@ package com.litl.marbelmayhem.model
             pauseGame();
         }
 
-        public function addToScores(player1:Number, player2:Number):void {
-            _player1.score += player1;
-            _player2.score += player2;
+        public function addToScores(player:Player, score:uint):void {
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+
+                if (player.remoteID == Player(_playersInGame[i]).remoteID) {
+                    Player(_playersInGame[i]).score += score;
+                }
+            }
 
             dispatchEvent(new Event(MarbleEvent.SCORE_CHANGED, true));
         }
 
-        public function addWinningCollision(player:Number):void {
-            if (player == 1) {
-                _player1.winningCollisions += 1;
-            }
-            else if (player == 2) {
-                _player2.winningCollisions += 1;
+        public function addWinningCollision(player:Player):void {
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+
+                if (player.remoteID == Player(_playersInGame[i]).remoteID) {
+                    Player(_playersInGame[i]).winningCollisions += 1;
+                }
             }
         }
 
-        public function playerDied(player:Number):void {
-            if (player == 1) {
-                _player1.lives -= 1;
-            }
-            else if (player == 2) {
-                _player2.lives -= 1;
+        public function playerDied(player:Player):void {
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+
+                if (player.remoteID == Player(_playersInGame[i]).remoteID) {
+                    Player(_playersInGame[i]).lives -= 1;
+                }
             }
             checkForRemainingLives();
             dispatchEvent(new MarbleEvent(MarbleEvent.PLAYER_DIED));
@@ -170,6 +176,15 @@ package com.litl.marbelmayhem.model
         public function set gameViewState(value:String):void {
             _gameViewState = value;
             dispatchEvent(new MarbleEvent(MarbleEvent.RESET_LAYOUT));
+        }
+
+        public function get playersInGame():Array {
+            return _playersInGame;
+        }
+
+        public function set playersInGame(value:Array):void {
+            _playersInGame = value;
+            dispatchEvent(new Event(MarbleEvent.TOTAL_PLAYERS_CHANGED));
         }
 
     }
