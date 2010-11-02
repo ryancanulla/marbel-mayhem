@@ -30,7 +30,7 @@ package com.litl.marbelmayhem.model.service
         }
 
         protected function createRemoteManager():void {
-            remoteManager = new LitlRemoteManager(_service, new RemoteFactory);
+            remoteManager = new LitlRemoteManager(_service, new RemoteFactory());
         }
 
         protected function addServiceListeners():void {
