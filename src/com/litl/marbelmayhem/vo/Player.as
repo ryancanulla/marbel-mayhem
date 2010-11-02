@@ -14,6 +14,6 @@ package com.litl.marbelmayhem.vo
         public var accX:Number = 0;
         public var accZ:Number = 0;
         public var vx:Number = 0;
-        public var vy:Number = 0;
+        public var vz:Number = 0;
     }
 }

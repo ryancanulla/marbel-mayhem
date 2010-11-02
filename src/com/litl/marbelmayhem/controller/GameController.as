@@ -75,12 +75,12 @@ package com.litl.marbelmayhem.controller
 
         protected function movePlayer(player:Player):void {
             player.vx *= FRICTION;
-            player.vy *= FRICTION;
+            player.vz *= FRICTION;
 
             player.x += player.vx;
-            player.z -= player.vy;
+            player.z -= player.vz;
             player.roll(player.vx * -.5);
-            player.pitch(player.vy * -.5);
+            player.pitch(player.vz * -.5);
         }
 
         protected function updateTotalPlayersOnStage(e:Event):void {
@@ -122,16 +122,15 @@ package com.litl.marbelmayhem.controller
 
         protected function swapVelovities():void {
             var tempX:Number = Player(model.playersInGame[0]).vx;
-            var tempY:Number = Player(model.playersInGame[0]).vy;
+            var tempZ:Number = Player(model.playersInGame[0]).vz;
             Player(model.playersInGame[0]).vx = Player(model.playersInGame[1]).vx * 1.5;
-            Player(model.playersInGame[0]).vy = Player(model.playersInGame[1]).vy * 1.5;
+            Player(model.playersInGame[0]).vz = Player(model.playersInGame[1]).vz * 1.5;
             Player(model.playersInGame[1]).vx = tempX * 1.5;
-            Player(model.playersInGame[1]).vy = tempY * 1.5;
+            Player(model.playersInGame[1]).vz = tempZ * 1.5;
         }
 
         protected function renderScreen(e:Event):void {
             if (_viewManager.currentViewState == View.CHANNEL && model.gameInProgress == true) {
-                trace(checkForCollision());
 
                 if (checkForCollision() == true) {
                     //calculateScores(true);
@@ -227,35 +226,38 @@ package com.litl.marbelmayhem.controller
            }
          }*/
 
-        /*private function calculateScores(hit:Boolean):void {
-           if (hit == true) {
-           var p2:Number = Math.abs(Math.round((player1VX + player1VY) * 10));
-           var p1:Number = Math.abs(Math.round((player2VX + player2VY) * 10));
+        private function calculateScores(hit:Boolean):void {
+            if (hit == true) {
+                var player1:Player = model.playersInGame[0]
+                var player2:Player = model.playersInGame[1];
 
-           if (p1 > p2) {
-           model.addToScores(p1 - p2, 0);
-           model.addWinningCollision(1);
-           }
-           else if (p1 < p2) {
-           model.addToScores(0, p2 - p1);
-           model.addWinningCollision(2);
-           }
-           }
-           else if (hit == false) {
-           //                var center:Point = new Point(floor.x / 2, floor.height / 2);
-           //
-           //                var dist0X:Number = player0.x - center.x;
-           //                var dist0Z:Number = player0.z - center.y;
-           //                var dist0:Number = Math.sqrt(dist0X * dist0X + dist0Z * dist0Z);
-           //
-           //                var dist1X:Number = player1.x - center.x;
-           //                var dist1Z:Number = player1.z - center.y;
-           //                var dist1:Number = Math.sqrt(dist1X * dist1X + dist1Z * dist1Z);
-           //
-           //                trace("player 1: " + dist0);
-           //                trace("player 2: " + dist1);
-           }
-         }*/
+                var player1TotalVelocity:Number = Math.abs(Math.round(Player(model.playersInGame[0]).vx + Player(model.playersInGame[0]).vz));
+                var player2TotalVelocity:Number = Math.abs(Math.round(Player(model.playersInGame[1]).vx + Player(model.playersInGame[1]).vz));
+
+                if (player1TotalVelocity > player2TotalVelocity) {
+                    model.addToScores(player1, player1TotalVelocity - player2TotalVelocity);
+                    model.addWinningCollision(player1);
+                }
+                else if (player2TotalVelocity > player1TotalVelocity) {
+                    model.addToScores(player2, player2TotalVelocity - player1TotalVelocity);
+                    model.addWinningCollision(player2);
+                }
+            }
+            else if (hit == false) {
+                //                var center:Point = new Point(floor.x / 2, floor.height / 2);
+                //
+                //                var dist0X:Number = player0.x - center.x;
+                //                var dist0Z:Number = player0.z - center.y;
+                //                var dist0:Number = Math.sqrt(dist0X * dist0X + dist0Z * dist0Z);
+                //
+                //                var dist1X:Number = player1.x - center.x;
+                //                var dist1Z:Number = player1.z - center.y;
+                //                var dist1:Number = Math.sqrt(dist1X * dist1X + dist1Z * dist1Z);
+                //
+                //                trace("player 1: " + dist0);
+                //                trace("player 2: " + dist1);
+            }
+        }
 
         private function showGameResults(e:Event):void {
             model.pauseGame();

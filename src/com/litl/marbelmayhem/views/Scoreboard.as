@@ -2,6 +2,7 @@ package com.litl.marbelmayhem.views
 {
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
+    import com.litl.marbelmayhem.vo.Player;
 
     import flash.display.Loader;
     import flash.display.Shape;
@@ -100,8 +101,11 @@ package com.litl.marbelmayhem.views
         }
 
         private function updateProperties(e:Event = null):void {
-            player1Score.text = model.player1.score.toString();
-            player2Score.text = model.player2.score.toString();
+            player1Score.text = Player(model.playersInGame[0]).score.toString();
+
+            if (model.playersInGame.length > 1) {
+                player2Score.text = Player(model.playersInGame[1]).score.toString();
+            }
 
             timeDisplay.text = model.time;
         }

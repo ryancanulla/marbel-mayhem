@@ -66,8 +66,8 @@ package com.litl.marbelmayhem.views
         }
 
         protected function createScoreboard():void {
-            //scoreboard = new Scoreboard(this);
-            //addChild(scoreboard);
+            scoreboard = new Scoreboard(this);
+            addChild(scoreboard);
         }
 
         private function createPlayers():void {

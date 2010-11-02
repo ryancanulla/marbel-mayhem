@@ -18,8 +18,8 @@ package com.litl.marbelmayhem.model.service
         }
 
         override protected function onAccelerometerEvent(e:AccelerometerEvent):void {
-            Player(model.playersInGame[_id]).vx += e.accelerationX * 2;
-            Player(model.playersInGame[_id]).vy += e.accelerationY * 2;
+            Player(model.playersInGame[_id]).vx += e.accelerationY * 2;
+            Player(model.playersInGame[_id]).vz += e.accelerationX * 2;
         }
     }
 }
