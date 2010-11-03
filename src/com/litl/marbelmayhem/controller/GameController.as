@@ -56,21 +56,13 @@ package com.litl.marbelmayhem.controller
         }
 
         public function addPlayerToStage(e:MarbleEvent):void {
-            if (_viewManager.currentViewState == View.CARD) {
-                return;
-            }
-            else {
-                //player.name = player.remoteID;
+            if (_viewManager.currentViewState == View.CHANNEL) {
                 ChannelView(_currentView).addPlayer(e.player);
             }
         }
 
         public function removePlayerFromStage(e:MarbleEvent):void {
-            if (_viewManager.currentViewState == View.CARD) {
-                return;
-            }
-            else {
-                //player.name = player.remoteID;
+            if (_viewManager.currentViewState == View.CHANNEL) {
                 ChannelView(_currentView).removePlayer(e.player);
             }
         }
@@ -102,6 +94,31 @@ package com.litl.marbelmayhem.controller
             Player(model.playersInGame[1]).vz = tempZ * 1.5;
         }
 
+        protected function addGravity(player:Player):void {
+            if (player.x < ChannelView(_currentView).floor.x - ChannelView(_currentView).floor.width / 2) {
+                player.y -= GRAVITY;
+            }
+            else if (player.x > ChannelView(_currentView).floor.x + ChannelView(_currentView).floor.width / 2) {
+                player.y -= GRAVITY;
+            }
+            else if (player.z > ChannelView(_currentView).floor.z + ChannelView(_currentView).floor.height / 2) {
+                player.y -= GRAVITY;
+            }
+            else if (player.z < ChannelView(_currentView).floor.z - ChannelView(_currentView).floor.height / 2) {
+                player.y -= GRAVITY;
+            }
+
+            // if under the floor then keep falling
+            if (player.y < ChannelView(_currentView).floor.y) {
+                player.y -= GRAVITY;
+            }
+
+            // you die after falling 1000 ft
+            if (player.y < -1000) {
+                model.playerDied(player);
+            }
+        }
+
         protected function renderScreen(e:Event):void {
             if (_viewManager.currentViewState == View.CHANNEL && model.gameInProgress == true) {
 
@@ -114,59 +131,12 @@ package com.litl.marbelmayhem.controller
 
                 for (var i:uint = 0; i < model.playersInGame.length; i++) {
                     movePlayer(model.playersInGame[i] as Player);
+                    addGravity(model.playersInGame[i] as Player);
                 }
 
                 // render the 3d scene
                 ChannelView(_currentView).awayWorld.render();
             }
-
-        /*if (_view.player0.x < _view.floor.x - _view.floor.width / 2) {
-           _view.player0.y -= GRAVITY;
-           }
-           else if (_view.player0.x > _view.floor.x + _view.floor.width / 2) {
-           _view.player0.y -= GRAVITY;
-           }
-           else if (_view.player0.z > _view.floor.z + _view.floor.height / 2) {
-           _view.player0.y -= GRAVITY;
-           }
-           else if (_view.player0.z < _view.floor.z - _view.floor.height / 2) {
-           _view.player0.y -= GRAVITY;
-           }
-
-           if (_view.player1.x < _view.floor.x - _view.floor.width / 2) {
-           _view.player1.y -= GRAVITY;
-           }
-           else if (_view.player1.x > _view.floor.x + _view.floor.width / 2) {
-           _view.player1.y -= GRAVITY;
-           }
-           else if (_view.player1.z > _view.floor.z + _view.floor.height / 2) {
-           _view.player1.y -= GRAVITY;
-           }
-           else if (_view.player1.z < _view.floor.z - _view.floor.height / 2) {
-           _view.player1.y -= GRAVITY;
-           }
-
-           if (_view.player0.y < _view.floor.y) {
-           _view.player0.y -= GRAVITY;
-           }
-
-           if (_view.player1.y < _view.floor.y) {
-           _view.player1.y -= GRAVITY;
-           }
-
-           if (_view.player1.y < -1000) {
-           resetObjects(1);
-           model.addToScores(0, 200);
-           model.playerDied(1);
-           }
-
-           if (_view.player0.y < -1000) {
-           resetObjects(0);
-           model.addToScores(200, 0);
-           model.playerDied(2);
-           }
-
-         _view.view.render();*/
         }
 
         private function startNewGame(e:UserInputMessage):void {

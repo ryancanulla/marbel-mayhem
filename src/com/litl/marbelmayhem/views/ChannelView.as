@@ -105,7 +105,7 @@ package com.litl.marbelmayhem.views
         }
 
         public function removePlayer(player:Player):void {
-            awayWorld.scene.addChild(player);
+            awayWorld.scene.removeChild(player);
         }
 
         public function updateLayout():void {

@@ -21,9 +21,11 @@ package com.litl.marbelmayhem.model.service
         }
 
         override protected function onRemoteConnected(remote:IRemoteControl, handler:IRemoteHandler):void {
-            var player:Player = new Player();
-            player.remoteID = remote.id;
-            model.addPlayer(player);
+            if (model.playersInGame.length < 2) {
+                var player:Player = new Player();
+                player.remoteID = remote.id;
+                model.addPlayer(player);
+            }
         }
 
         override protected function onRemoteDisconnected(remote:IRemoteControl, handler:IRemoteHandler):void {
