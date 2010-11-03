@@ -62,27 +62,11 @@ package com.litl.marbelmayhem.views
         protected function createObjects():void {
             createWorld();
             createFloor();
-            createPlayers();
         }
 
         protected function createScoreboard():void {
             scoreboard = new Scoreboard(this);
             addChild(scoreboard);
-        }
-
-        private function createPlayers():void {
-            for (var i:uint = 0; i < model.playersInGame.length; i++) {
-                var player:Player = model.playersInGame[i] as Player;
-                player.material = new WireColorMaterial(0x004518); // WireColorMaterial(0xBE1E2D);
-                player.segmentsH = 15;
-                player.segmentsW = 15;
-                player.x = floor.x + (Math.random() * 400);
-                player.y = floor.y + 50;
-                player.z = floor.z;
-                player.radius = 40;
-
-                awayWorld.scene.addChild(player);
-            }
         }
 
         private function createFloor():void {
@@ -92,12 +76,7 @@ package com.litl.marbelmayhem.views
             floor.segmentsW = 10;
             floor.yUp = true;
 
-            floor.y = 0;
-            floor.x = 0;
-            floor.z = -4100;
-            floor.width = 1100;
-            floor.height = 1100;
-
+            updateLayout();
             awayWorld.scene.addChild(floor);
         }
 
@@ -113,8 +92,28 @@ package com.litl.marbelmayhem.views
             awayWorld.scene.addChild(world);
         }
 
-        public function updateLayout():void {
+        public function addPlayer(player:Player):void {
+            player.material = new WireColorMaterial(0x004518); // WireColorMaterial(0xBE1E2D);
+            player.segmentsH = 15;
+            player.segmentsW = 15;
+            player.x = floor.x + (Math.random() * 400);
+            player.y = floor.y + 50;
+            player.z = floor.z;
+            player.radius = 40;
 
+            awayWorld.scene.addChild(player);
+        }
+
+        public function removePlayer(player:Player):void {
+            awayWorld.scene.addChild(player);
+        }
+
+        public function updateLayout():void {
+            floor.y = 0;
+            floor.x = 0;
+            floor.z = -4100;
+            floor.width = 1100;
+            floor.height = 1100;
         }
 
         override protected function sizeUpdated():void {

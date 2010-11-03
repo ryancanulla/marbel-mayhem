@@ -1,10 +1,12 @@
 package com.litl.marbelmayhem.model
 {
     import com.litl.helpers.richinput.remotehandler.RemoteHandlerManager;
+    import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.service.LitlViewManager;
     import com.litl.marbelmayhem.vo.Player;
     import com.litl.sdk.enum.View;
+    import com.litl.sdk.richinput.IRemoteControl;
     import com.litl.sdk.service.LitlService;
 
     import flash.display.Sprite;
@@ -21,6 +23,8 @@ package com.litl.marbelmayhem.model
         private var _gameInProgress:Boolean;
         private var _gameViewState:String;
         private var _playersInGame:Array;
+
+        //private var _controller:GameController;
         private var gameTimer:Timer;
         private var gameRenderClock:Timer;
         private var timeLeft:Number;
@@ -42,6 +46,7 @@ package com.litl.marbelmayhem.model
         }
 
         private function init():void {
+
             _playersInGame = new Array();
             _gameInProgress = true;
 
@@ -182,9 +187,25 @@ package com.litl.marbelmayhem.model
             return _playersInGame;
         }
 
-        public function set playersInGame(value:Array):void {
-            _playersInGame = value;
-            dispatchEvent(new Event(MarbleEvent.TOTAL_PLAYERS_CHANGED));
+        public function addPlayer(player:Player):void {
+            _playersInGame.push(player);
+
+            var event:MarbleEvent = new MarbleEvent(MarbleEvent.ADD_PLAYER);
+            event.player = player;
+            dispatchEvent(event);
+        }
+
+        public function removePlayer(remote:IRemoteControl):void {
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+                if (Player(_playersInGame[i]).remoteID == remote.id) {
+                    var event:MarbleEvent = new MarbleEvent(MarbleEvent.REMOVE_PLAYER);
+                    event.player = Player(_playersInGame[i]);
+                    dispatchEvent(event);
+
+                    _playersInGame.splice(i, 1);
+                }
+            }
+
         }
 
     }

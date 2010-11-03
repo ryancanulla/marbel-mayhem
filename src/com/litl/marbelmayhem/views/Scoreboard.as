@@ -101,12 +101,19 @@ package com.litl.marbelmayhem.views
         }
 
         private function updateProperties(e:Event = null):void {
-            player1Score.text = Player(model.playersInGame[0]).score.toString();
-
-            if (model.playersInGame.length > 1) {
-                player2Score.text = Player(model.playersInGame[1]).score.toString();
+            switch (model.playersInGame.length) {
+                case 0:
+                    player1Score.text = "0";
+                    player2Score.text = "0";
+                    break;
+                case 1:
+                    player1Score.text = Player(model.playersInGame[0]).score.toString();
+                    break;
+                case 2:
+                    player1Score.text = Player(model.playersInGame[0]).score.toString();
+                    player2Score.text = Player(model.playersInGame[1]).score.toString();
+                    break
             }
-
             timeDisplay.text = model.time;
         }
 

@@ -12,6 +12,7 @@ package com.litl.marbelmayhem.model.service
     public class Remote extends AccelerometerRemoteHandler implements IRemoteHandler
     {
         protected var _id:int;
+        protected var remoteID:String;
         private var model:GameManager;
 
         public function Remote(id:int) {
@@ -21,11 +22,17 @@ package com.litl.marbelmayhem.model.service
         }
 
         override protected function onAccelerometerEvent(e:AccelerometerEvent):void {
-            Player(model.playersInGame[_id]).vx += e.accelerationY * 2;
-            Player(model.playersInGame[_id]).vz += e.accelerationX * 2;
+            for (var i:uint = 0; i < model.playersInGame.length; i++) {
+                if (Player(model.playersInGame[i]).remoteID == remoteID) {
+                    Player(model.playersInGame[i]).vx += e.accelerationY * 3;
+                    Player(model.playersInGame[i]).vz += e.accelerationX * 3;
+                }
+            }
         }
 
         override public function pair(remote:IRemoteControl):void {
+            remoteID = remote.id;
+
             if (remote.hasAccelerometer) {
                 remote.accelerometer.setXSmoothingLevel(AccelerometerSmoothingLevel.OFF);
                 remote.accelerometer.setYSmoothingLevel(AccelerometerSmoothingLevel.OFF);

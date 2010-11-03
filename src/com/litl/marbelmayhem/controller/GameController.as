@@ -41,7 +41,8 @@ package com.litl.marbelmayhem.controller
             model = GameManager.getInstance();
             model.addEventListener(MarbleEvent.RENDER, renderScreen);
             model.addEventListener(MarbleEvent.GAME_OVER, showGameResults);
-            model.addEventListener(MarbleEvent.TOTAL_PLAYERS_CHANGED, updateTotalPlayersOnStage);
+            model.addEventListener(MarbleEvent.ADD_PLAYER, addPlayerToStage);
+            model.addEventListener(MarbleEvent.REMOVE_PLAYER, removePlayerFromStage);
         }
 
         protected function movePlayer(player:Player):void {
@@ -54,23 +55,24 @@ package com.litl.marbelmayhem.controller
             player.pitch(player.vz * -.5);
         }
 
-        protected function updateTotalPlayersOnStage(e:Event):void {
-
+        public function addPlayerToStage(e:MarbleEvent):void {
             if (_viewManager.currentViewState == View.CARD) {
                 return;
             }
             else {
-                for (var i:uint = 0; i < model.playersInGame.length; i++) {
-                    var player:Player = model.playersInGame[i] as Player;
-
-                    if (player.isPlaying) {
-                    }
-                    else {
-                        ChannelView(_currentView).awayWorld.scene.addChild(player);
-                    }
-                }
+                //player.name = player.remoteID;
+                ChannelView(_currentView).addPlayer(e.player);
             }
+        }
 
+        public function removePlayerFromStage(e:MarbleEvent):void {
+            if (_viewManager.currentViewState == View.CARD) {
+                return;
+            }
+            else {
+                //player.name = player.remoteID;
+                ChannelView(_currentView).removePlayer(e.player);
+            }
         }
 
         protected function checkForCollision():Boolean {
