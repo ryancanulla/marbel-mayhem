@@ -1,6 +1,6 @@
 package com.litl.marbelmayhem.controller
 {
-    import com.litl.helpers.richinput.remotehandler.RemoteHandlerManager;
+
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
     import com.litl.marbelmayhem.model.service.LitlViewManager;
@@ -8,44 +8,17 @@ package com.litl.marbelmayhem.controller
     import com.litl.marbelmayhem.views.ViewBase;
     import com.litl.marbelmayhem.vo.Player;
     import com.litl.sdk.enum.View;
-    import com.litl.sdk.event.RemoteStatusEvent;
     import com.litl.sdk.message.UserInputMessage;
-    import com.litl.sdk.message.ViewChangeMessage;
-    import com.litl.sdk.richinput.Accelerometer;
-    import com.litl.sdk.richinput.IRemoteControl;
-    import com.litl.sdk.richinput.RemoteManager;
-    import com.litl.sdk.service.LitlService;
 
-    import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.Point;
-    import flash.utils.Dictionary;
 
     public class GameController
     {
         private static var _instance:GameController;
         private var _currentView:ViewBase;
         private var _viewManager:LitlViewManager;
-        public var remoteIds:Array;
-        public var models:Array;
         public var model:GameManager;
-        private var players:Dictionary;
-        private var service:LitlService;
-        protected var remoteManager:RemoteManager;
-        protected var remoteHandlers:Dictionary;
-
-        private var player1AccX:Number = 0;
-        private var player1AccZ:Number = 0;
-        private var player1VX:Number = 0;
-        private var player1VY:Number = 0;
-
-        private var player2AccX:Number = 0;
-        private var player2AccZ:Number = 0;
-        private var player2VX:Number = 0;
-        private var player2VY:Number = 0;
-
-        private var rotate1:Number;
-        private var rotate2:Number;
 
         private static const FRICTION:Number = .95;
         private static const SPEED:Number = 3;
@@ -69,8 +42,6 @@ package com.litl.marbelmayhem.controller
             model.addEventListener(MarbleEvent.RENDER, renderScreen);
             model.addEventListener(MarbleEvent.GAME_OVER, showGameResults);
             model.addEventListener(MarbleEvent.TOTAL_PLAYERS_CHANGED, updateTotalPlayersOnStage);
-            models = new Array();
-            //players = new Dictionary();
         }
 
         protected function movePlayer(player:Player):void {
