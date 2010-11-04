@@ -10,7 +10,7 @@ package com.litl.marbelmayhem.views
 
         override protected function init():void {
             playerIconURL = "../assets/scoreboard/playerTwoLife.png";
-            player = model.player2;
+            //player = model.player2;
             createChildren();
         }
     }

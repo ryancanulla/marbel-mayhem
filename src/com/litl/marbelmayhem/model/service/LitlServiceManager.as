@@ -5,6 +5,7 @@ package com.litl.marbelmayhem.model.service
     import com.litl.marbelmayhem.views.ViewBase;
     import com.litl.sdk.enum.View;
     import com.litl.sdk.message.InitializeMessage;
+    import com.litl.sdk.message.UserInputMessage;
     import com.litl.sdk.message.ViewChangeMessage;
     import com.litl.sdk.richinput.RemoteManager;
     import com.litl.sdk.service.LitlService;
@@ -16,13 +17,17 @@ package com.litl.marbelmayhem.model.service
     {
         private var _service:LitlService;
         private var remoteManager:LitlRemoteManager;
+        private static var _instance:LitlServiceManager;
 
-        public function LitlServiceManager(view:Sprite) {
-            _service = new LitlService(view);
-            addServiceListeners();
-            connect();
+        public function LitlServiceManager(enforcer:SingletonEnforcer) {
 
-            createRemoteManager();
+        }
+
+        public static function getInstance():LitlServiceManager {
+            if (LitlServiceManager._instance == null) {
+                LitlServiceManager._instance = new LitlServiceManager(new SingletonEnforcer());
+            }
+            return LitlServiceManager._instance;
         }
 
         protected function connect():void {
@@ -33,13 +38,22 @@ package com.litl.marbelmayhem.model.service
             remoteManager = new LitlRemoteManager(_service, new RemoteFactory());
         }
 
-        protected function addServiceListeners():void {
-            //service.addEventListener(InitializeMessage.INITIALIZE,
-        }
-
         public function get service():LitlService {
             return _service;
         }
 
+        public function set view(view:Sprite):void {
+            if (_service == null) {
+                _service = new LitlService(view);
+                connect();
+                createRemoteManager();
+            }
+
+        }
+
     }
+}
+
+class SingletonEnforcer
+{
 }

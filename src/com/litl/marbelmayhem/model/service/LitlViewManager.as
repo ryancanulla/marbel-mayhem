@@ -1,5 +1,6 @@
 package com.litl.marbelmayhem.model.service
 {
+    import com.litl.helpers.richinput.Stats;
     import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.views.CardView;
     import com.litl.marbelmayhem.views.ChannelView;
@@ -45,13 +46,13 @@ package com.litl.marbelmayhem.model.service
                 case View.CHANNEL:
 
                     if (currentView == null)
-                        currentView = new ChannelView();
+                        currentView = new ChannelView(_service);
                     _currentViewState = View.CHANNEL;
                     break;
                 case View.FOCUS:
 
                     if (currentView == null)
-                        currentView = new ChannelView();
+                        currentView = new ChannelView(_service);
                     _currentViewState = View.CHANNEL;
                     break;
                 case View.CARD:

@@ -17,6 +17,7 @@ package com.litl.marbelmayhem.model.service
         public function LitlRemoteManager(service:LitlService, factory:IRemoteHandlerFactory, target:IEventDispatcher = null) {
             super(service, factory, target);
 
+            // dont forget to start
             start();
         }
 
@@ -31,6 +32,5 @@ package com.litl.marbelmayhem.model.service
         override protected function onRemoteDisconnected(remote:IRemoteControl, handler:IRemoteHandler):void {
             model.removePlayer(remote);
         }
-
     }
 }

@@ -48,7 +48,7 @@ package com.litl.marbelmayhem.model
         private function init():void {
 
             _playersInGame = new Array();
-            _gameInProgress = true;
+            _gameInProgress = false;
 
             countdown = new Timer(1000, 5);
             countdown.addEventListener(TimerEvent.TIMER_COMPLETE, resumeGame);
@@ -102,6 +102,7 @@ package com.litl.marbelmayhem.model
             gameTimer.reset();
             resetPlayers();
             timeLeft = gameTimer.repeatCount;
+            dispatchEvent(new Event(MarbleEvent.TIMER_TICK, true));
         }
 
         public function pauseGame():void {
@@ -119,14 +120,14 @@ package com.litl.marbelmayhem.model
         }
 
         public function addToScores(player:Player, score:uint):void {
-            for (var i:uint = 0; i < _playersInGame.length; i++) {
-
-                if (player.remoteID == Player(_playersInGame[i]).remoteID) {
-                    Player(_playersInGame[i]).score += score;
+            if (_gameInProgress) {
+                for (var i:uint = 0; i < _playersInGame.length; i++) {
+                    if (player.remoteID == Player(_playersInGame[i]).remoteID) {
+                        Player(_playersInGame[i]).score += score;
+                    }
                 }
+                dispatchEvent(new Event(MarbleEvent.SCORE_CHANGED, true));
             }
-
-            dispatchEvent(new Event(MarbleEvent.SCORE_CHANGED, true));
         }
 
         public function addWinningCollision(player:Player):void {
@@ -140,13 +141,43 @@ package com.litl.marbelmayhem.model
 
         public function playerDied(player:Player):void {
             for (var i:uint = 0; i < _playersInGame.length; i++) {
+                if (player.remoteID !== Player(_playersInGame[i]).remoteID) {
+                    addToScores(_playersInGame[i], 200);
+                }
 
                 if (player.remoteID == Player(_playersInGame[i]).remoteID) {
                     Player(_playersInGame[i]).lives -= 1;
+
+                    checkForRemainingLives();
+                    var event:MarbleEvent = new MarbleEvent(MarbleEvent.PLAYER_DIED);
+                    event.player = _playersInGame[i];
+                    dispatchEvent(event);
+                }
+
+            }
+        }
+
+        public function addPlayer(player:Player):void {
+            player.lives = maxLives;
+            player.score = 0;
+            _playersInGame.push(player);
+
+            var event:MarbleEvent = new MarbleEvent(MarbleEvent.ADD_PLAYER);
+            event.player = player;
+            dispatchEvent(event);
+        }
+
+        public function removePlayer(remote:IRemoteControl):void {
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+                if (Player(_playersInGame[i]).remoteID == remote.id) {
+                    var event:MarbleEvent = new MarbleEvent(MarbleEvent.REMOVE_PLAYER);
+                    event.player = Player(_playersInGame[i]);
+                    dispatchEvent(event);
+
+                    _playersInGame.splice(i, 1);
                 }
             }
-            checkForRemainingLives();
-            dispatchEvent(new MarbleEvent(MarbleEvent.PLAYER_DIED));
+
         }
 
         public function get player1():Player {
@@ -186,28 +217,6 @@ package com.litl.marbelmayhem.model
         public function get playersInGame():Array {
             return _playersInGame;
         }
-
-        public function addPlayer(player:Player):void {
-            _playersInGame.push(player);
-
-            var event:MarbleEvent = new MarbleEvent(MarbleEvent.ADD_PLAYER);
-            event.player = player;
-            dispatchEvent(event);
-        }
-
-        public function removePlayer(remote:IRemoteControl):void {
-            for (var i:uint = 0; i < _playersInGame.length; i++) {
-                if (Player(_playersInGame[i]).remoteID == remote.id) {
-                    var event:MarbleEvent = new MarbleEvent(MarbleEvent.REMOVE_PLAYER);
-                    event.player = Player(_playersInGame[i]);
-                    dispatchEvent(event);
-
-                    _playersInGame.splice(i, 1);
-                }
-            }
-
-        }
-
     }
 }
 

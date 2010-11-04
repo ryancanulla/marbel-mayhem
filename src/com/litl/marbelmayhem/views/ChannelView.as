@@ -9,10 +9,12 @@ package com.litl.marbelmayhem.views
     import away3d.primitives.Skybox;
     import away3d.primitives.Sphere;
 
+    import com.litl.helpers.richinput.Stats;
     import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.model.GameManager;
     import com.litl.marbelmayhem.utils.GameMaterials;
     import com.litl.marbelmayhem.vo.Player;
+    import com.litl.sdk.service.LitlService;
 
     import flash.display.Sprite;
     import flash.events.Event;
@@ -29,7 +31,7 @@ package com.litl.marbelmayhem.views
         public var world:Skybox;
         public var scoreboard:Scoreboard;
 
-        public function ChannelView() {
+        public function ChannelView(service:LitlService) {
             super();
 
             controller = GameController.getInstance();
@@ -39,9 +41,15 @@ package com.litl.marbelmayhem.views
             createView();
             createScene();
             createScoreboard();
+            createStats(service);
 
             updateLayout();
             addEventListener(Event.ENTER_FRAME, renderScene);
+        }
+
+        private function createStats(service:LitlService):void {
+            var stats:Stats = new Stats(service);
+            addChild(stats);
         }
 
         protected function createView():void {
@@ -93,7 +101,7 @@ package com.litl.marbelmayhem.views
         }
 
         public function addPlayer(player:Player):void {
-            player.material = new WireColorMaterial(0x004518); // WireColorMaterial(0xBE1E2D);
+            player.material = new WireColorMaterial(0x004518 * Math.random()); // WireColorMaterial(0xBE1E2D);
             player.segmentsH = 15;
             player.segmentsW = 15;
             player.x = floor.x + (Math.random() * 400);
@@ -111,7 +119,7 @@ package com.litl.marbelmayhem.views
         public function updateLayout():void {
             floor.y = 0;
             floor.x = 0;
-            floor.z = -4100;
+            floor.z = -3875;
             floor.width = 1100;
             floor.height = 1100;
         }

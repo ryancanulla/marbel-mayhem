@@ -57,7 +57,6 @@ package com.litl.marbelmayhem.views
             addChild(playerLifeFive);
 
             updateLayout();
-            updateProperties();
         }
 
         protected function updateLayout():void {
@@ -68,51 +67,51 @@ package com.litl.marbelmayhem.views
             playerLifeFive.x = 100;
         }
 
-        protected function updateProperties(e:Event = null):void {
-        /*switch (player.lives) {
-           case 5:
-           playerLifeFive.visible = true;
-           playerLifeFour.visible = true;
-           playerLifeThree.visible = true;
-           playerLifeTwo.visible = true;
-           playerLifeOne.visible = true;
-           break;
-           case 4:
-           playerLifeFive.visible = false;
-           playerLifeFour.visible = true;
-           playerLifeThree.visible = true;
-           playerLifeTwo.visible = true;
-           playerLifeOne.visible = true;
-           break;
-           case 3:
-           playerLifeFive.visible = false;
-           playerLifeFour.visible = false;
-           playerLifeThree.visible = true;
-           playerLifeTwo.visible = true;
-           playerLifeOne.visible = true;
-           break;
-           case 2:
-           playerLifeFive.visible = false;
-           playerLifeFour.visible = false;
-           playerLifeThree.visible = false;
-           playerLifeTwo.visible = true;
-           playerLifeOne.visible = true;
-           break;
-           case 1:
-           playerLifeFive.visible = false;
-           playerLifeFour.visible = false;
-           playerLifeThree.visible = false;
-           playerLifeTwo.visible = false;
-           playerLifeOne.visible = true;
-           break;
-           case 0:
-           playerLifeFive.visible = false;
-           playerLifeFour.visible = false;
-           playerLifeThree.visible = false;
-           playerLifeTwo.visible = false;
-           playerLifeOne.visible = false;
-           break;
-         }*/
+        protected function updateProperties(e:MarbleEvent):void {
+            switch (e.player.lives) {
+                case 5:
+                    playerLifeFive.visible = true;
+                    playerLifeFour.visible = true;
+                    playerLifeThree.visible = true;
+                    playerLifeTwo.visible = true;
+                    playerLifeOne.visible = true;
+                    break;
+                case 4:
+                    playerLifeFive.visible = false;
+                    playerLifeFour.visible = true;
+                    playerLifeThree.visible = true;
+                    playerLifeTwo.visible = true;
+                    playerLifeOne.visible = true;
+                    break;
+                case 3:
+                    playerLifeFive.visible = false;
+                    playerLifeFour.visible = false;
+                    playerLifeThree.visible = true;
+                    playerLifeTwo.visible = true;
+                    playerLifeOne.visible = true;
+                    break;
+                case 2:
+                    playerLifeFive.visible = false;
+                    playerLifeFour.visible = false;
+                    playerLifeThree.visible = false;
+                    playerLifeTwo.visible = true;
+                    playerLifeOne.visible = true;
+                    break;
+                case 1:
+                    playerLifeFive.visible = false;
+                    playerLifeFour.visible = false;
+                    playerLifeThree.visible = false;
+                    playerLifeTwo.visible = false;
+                    playerLifeOne.visible = true;
+                    break;
+                case 0:
+                    playerLifeFive.visible = false;
+                    playerLifeFour.visible = false;
+                    playerLifeThree.visible = false;
+                    playerLifeTwo.visible = false;
+                    playerLifeOne.visible = false;
+                    break;
+            }
         }
 
         private function reset(e:Event):void {

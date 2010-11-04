@@ -14,7 +14,7 @@ package
 
     import net.hires.debug.Stats;
 
-    [SWF(width="1280", height="800", framerate="30")]
+    [SWF(width="1280", height="800", framerate="60")]
     public class Main extends Sprite
     {
 
@@ -29,13 +29,15 @@ package
 
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.align = StageAlign.TOP_LEFT;
+            stage.frameRate = 60;
 
             addEventListener(Event.ADDED_TO_STAGE, init);
         }
 
         private function init(e:Event):void {
 
-            serviceManager = new LitlServiceManager(this);
+            serviceManager = LitlServiceManager.getInstance();
+            serviceManager.view = this;
 
             viewManager = new LitlViewManager(this);
             viewManager.service = serviceManager.service;

@@ -3,12 +3,14 @@ package com.litl.marbelmayhem.controller
 
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
+    import com.litl.marbelmayhem.model.service.LitlServiceManager;
     import com.litl.marbelmayhem.model.service.LitlViewManager;
     import com.litl.marbelmayhem.views.ChannelView;
     import com.litl.marbelmayhem.views.ViewBase;
     import com.litl.marbelmayhem.vo.Player;
     import com.litl.sdk.enum.View;
     import com.litl.sdk.message.UserInputMessage;
+    import com.litl.sdk.service.LitlService;
 
     import flash.events.Event;
     import flash.geom.Point;
@@ -18,6 +20,7 @@ package com.litl.marbelmayhem.controller
         private static var _instance:GameController;
         private var _currentView:ViewBase;
         private var _viewManager:LitlViewManager;
+        private var service:LitlService;
         public var model:GameManager;
 
         private static const FRICTION:Number = .95;
@@ -43,6 +46,9 @@ package com.litl.marbelmayhem.controller
             model.addEventListener(MarbleEvent.GAME_OVER, showGameResults);
             model.addEventListener(MarbleEvent.ADD_PLAYER, addPlayerToStage);
             model.addEventListener(MarbleEvent.REMOVE_PLAYER, removePlayerFromStage);
+
+            service = LitlServiceManager.getInstance().service;
+            service.addEventListener(UserInputMessage.GO_BUTTON_RELEASED, startNewGame);
         }
 
         protected function movePlayer(player:Player):void {
@@ -115,19 +121,27 @@ package com.litl.marbelmayhem.controller
 
             // you die after falling 1000 ft
             if (player.y < -1000) {
-                model.playerDied(player);
+                if (model.gameInProgress) {
+                    model.playerDied(player);
+                }
+                resetObject(player);
             }
         }
 
         protected function renderScreen(e:Event):void {
-            if (_viewManager.currentViewState == View.CHANNEL && model.gameInProgress == true) {
+            if (_viewManager.currentViewState == View.CHANNEL) {
 
                 if (checkForCollision() == true) {
-                    //calculateScores(true);
                     swapVelovities();
+
+                    if (model.gameInProgress) {
+                        calculateScores(true);
+                    }
                 }
 
-                //calculateScores(false);
+                if (model.gameInProgress) {
+                    calculateScores(false);
+                }
 
                 for (var i:uint = 0; i < model.playersInGame.length; i++) {
                     movePlayer(model.playersInGame[i] as Player);
@@ -148,26 +162,11 @@ package com.litl.marbelmayhem.controller
             }
         }
 
-        /*private function resetObjects(player:Number = 0):void {
-           if (player == 0) {
-           _view.player0.x = -150;
-           _view.player0.z = -4100;
-           _view.player0.y = _view.player0.radius + 5;
-           }
-           else if (player == 1) {
-           _view.player1.x = -50;
-           _view.player1.z = -4000;
-           _view.player1.y = _view.player1.radius + 5;
-           }
-           else {
-           _view.player0.x = 150;
-           _view.player0.z = -4100;
-           _view.player0.y = _view.player0.radius + 5;
-           _view.player1.x = -50;
-           _view.player1.z = -4000;
-           _view.player1.y = _view.player1.radius + 5;
-           }
-         }*/
+        private function resetObject(player:Player):void {
+            player.x = ChannelView(_currentView).floor.x + (Math.random() * 400);
+            player.y = ChannelView(_currentView).floor.y + 50;
+            player.z = ChannelView(_currentView).floor.z;
+        }
 
         private function calculateScores(hit:Boolean):void {
             if (hit == true) {
