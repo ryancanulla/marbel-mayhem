@@ -12,7 +12,7 @@ package
     import flash.display.StageScaleMode;
     import flash.events.Event;
 
-    import net.hires.debug.Stats;
+    import net.hires.debug.DoobStats;
 
     [SWF(width="1280", height="800", framerate="60")]
     public class Main extends Sprite

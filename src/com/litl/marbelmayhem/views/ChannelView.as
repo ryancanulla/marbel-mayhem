@@ -18,7 +18,7 @@ package com.litl.marbelmayhem.views
     import flash.display.Sprite;
     import flash.events.Event;
 
-    import net.hires.debug.Stats;
+    import net.hires.debug.DoobStats;
 
     public class ChannelView extends ViewBase
     {
@@ -50,7 +50,7 @@ package com.litl.marbelmayhem.views
         }
 
         private function createStats(service:LitlService):void {
-            var stats:Stats = new Stats(service);
+            var stats:DoobStats = new DoobStats(service);
             stats.x = 0;
             stats.y = 80;
             addChild(stats);

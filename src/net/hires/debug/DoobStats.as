@@ -14,6 +14,10 @@
 package net.hires.debug
 {
 
+    import com.litl.helpers.richinput.Stats;
+    import com.litl.helpers.richinput.stats.StatsStyle;
+    import com.litl.sdk.service.LitlService;
+
     import flash.display.BitmapData;
     import flash.display.Sprite;
     import flash.events.Event;
@@ -23,9 +27,10 @@ package net.hires.debug
     import flash.system.System;
     import flash.text.StyleSheet;
     import flash.text.TextField;
+    import flash.text.TextFormat;
     import flash.utils.getTimer;
 
-    public class Stats extends Sprite
+    public class DoobStats extends Sprite
     {
 
         protected const WIDTH:uint = 70;
@@ -55,7 +60,26 @@ package net.hires.debug
         /**
          * <b>Stats</b> FPS, MS and MEM, all in one.
          */
-        public function Stats():void {
+        public function DoobStats(service:LitlService = null):void {
+
+            if (service) {
+                trace("service");
+                var statsTextFormat:TextFormat = new TextFormat();
+                statsTextFormat.font = "Calibri";
+                statsTextFormat.size = 10;
+                statsTextFormat.color = 0xffff00;
+
+                var statFormat:StatsStyle = new StatsStyle();
+                statFormat.backgroundColor = colors.bg;
+                statFormat.background = true;
+                statFormat.padding = 10;
+                statFormat.textFormat = statsTextFormat;
+
+                var litlstats:Stats = new Stats(service, statFormat);
+                litlstats.x = 70;
+                litlstats.setSize(70, 70);
+                addChild(litlstats);
+            }
 
             mem_max = 0;
 
