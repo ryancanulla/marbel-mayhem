@@ -14,112 +14,61 @@ package com.litl.marbelmayhem.views
 
     public class PlayerLife extends Sprite
     {
+        protected var model:GameManager = GameManager.getInstance();
         protected var playerIconURL:String;
         protected var player:Player;
-        protected var model:GameManager = GameManager.getInstance();
-        private var playerLifeOne:Loader;
-        private var playerLifeTwo:Loader;
-        private var playerLifeThree:Loader;
-        private var playerLifeFour:Loader;
-        private var playerLifeFive:Loader;
+        protected var playerLife:Loader;
+        protected var lives:Dictionary;
+        private static const MAX_LIVES:Number = 5;
+
+        private var _total:Number = 5;
 
         public function PlayerLife() {
             super();
             model.addEventListener(MarbleEvent.PLAYER_DIED, updateProperties);
             model.addEventListener(MarbleEvent.START_NEW_GAME, reset);
+            lives = new Dictionary();
             init();
         }
 
         protected function init():void {
+
             createChildren();
         }
 
         protected function createChildren():void {
-
-            playerLifeOne = new Loader();
-            playerLifeOne.load(new URLRequest(playerIconURL));
-            addChild(playerLifeOne);
-
-            playerLifeTwo = new Loader();
-            playerLifeTwo.load(new URLRequest(playerIconURL));
-            addChild(playerLifeTwo);
-
-            playerLifeThree = new Loader();
-            playerLifeThree.load(new URLRequest(playerIconURL));
-            addChild(playerLifeThree);
-
-            playerLifeFour = new Loader();
-            playerLifeFour.load(new URLRequest(playerIconURL));
-            addChild(playerLifeFour);
-
-            playerLifeFive = new Loader();
-            playerLifeFive.load(new URLRequest(playerIconURL));
-            addChild(playerLifeFive);
-
+            for (var i:int = 0; i < MAX_LIVES; i++) {
+                var playerLife:Loader = new Loader();
+                playerLife.load(new URLRequest(playerIconURL));
+                playerLife.x = i * 25;
+                lives[i] = playerLife;
+                addChild(playerLife);
+            }
             updateLayout();
         }
 
         protected function updateLayout():void {
-            playerLifeOne.x = 0;
-            playerLifeTwo.x = 25;
-            playerLifeThree.x = 50;
-            playerLifeFour.x = 75;
-            playerLifeFive.x = 100;
+//            playerLifeOne.x = 0;
+//            playerLifeTwo.x = 25;
+//            playerLifeThree.x = 50;
+//            playerLifeFour.x = 75;
+//            playerLifeFive.x = 100;
         }
 
         protected function updateProperties(e:MarbleEvent):void {
-            switch (e.player.lives) {
-                case 5:
-                    playerLifeFive.visible = true;
-                    playerLifeFour.visible = true;
-                    playerLifeThree.visible = true;
-                    playerLifeTwo.visible = true;
-                    playerLifeOne.visible = true;
-                    break;
-                case 4:
-                    playerLifeFive.visible = false;
-                    playerLifeFour.visible = true;
-                    playerLifeThree.visible = true;
-                    playerLifeTwo.visible = true;
-                    playerLifeOne.visible = true;
-                    break;
-                case 3:
-                    playerLifeFive.visible = false;
-                    playerLifeFour.visible = false;
-                    playerLifeThree.visible = true;
-                    playerLifeTwo.visible = true;
-                    playerLifeOne.visible = true;
-                    break;
-                case 2:
-                    playerLifeFive.visible = false;
-                    playerLifeFour.visible = false;
-                    playerLifeThree.visible = false;
-                    playerLifeTwo.visible = true;
-                    playerLifeOne.visible = true;
-                    break;
-                case 1:
-                    playerLifeFive.visible = false;
-                    playerLifeFour.visible = false;
-                    playerLifeThree.visible = false;
-                    playerLifeTwo.visible = false;
-                    playerLifeOne.visible = true;
-                    break;
-                case 0:
-                    playerLifeFive.visible = false;
-                    playerLifeFour.visible = false;
-                    playerLifeThree.visible = false;
-                    playerLifeTwo.visible = false;
-                    playerLifeOne.visible = false;
-                    break;
+            for (var i:uint = 0; i < MAX_LIVES; i++) {
+                if (i >= e.player.lives) {
+                    var playerLife:Loader = lives[i];
+                    playerLife.visible = false;
+                }
             }
         }
 
         private function reset(e:Event):void {
-            playerLifeFive.visible = true;
-            playerLifeFour.visible = true;
-            playerLifeThree.visible = true;
-            playerLifeTwo.visible = true;
-            playerLifeOne.visible = true;
+            for (var i:uint = 0; i < MAX_LIVES; i++) {
+                var playerLife:Loader = lives[i];
+                playerLife.visible = true;
+            }
         }
     }
 }

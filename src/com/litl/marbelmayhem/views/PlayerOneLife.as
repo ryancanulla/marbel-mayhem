@@ -1,5 +1,6 @@
 package com.litl.marbelmayhem.views
 {
+    import com.litl.marbelmayhem.events.MarbleEvent;
 
     public class PlayerOneLife extends PlayerLife
     {
@@ -13,5 +14,6 @@ package com.litl.marbelmayhem.views
             //player = model.player1;
             createChildren();
         }
+
     }
 }

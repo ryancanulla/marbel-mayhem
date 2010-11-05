@@ -22,10 +22,9 @@ package com.litl.marbelmayhem.views
     {
         private var controller:GameController;
         private var model:GameManager;
+
         public var gameMaterials:GameMaterials;
         public var awayWorld:View3D;
-        public var player0:Sphere;
-        public var player1:Sphere;
         public var floor:Plane;
         public var world:Skybox;
         public var scoreboard:Scoreboard;
