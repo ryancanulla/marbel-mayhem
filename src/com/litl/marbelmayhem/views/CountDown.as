@@ -19,7 +19,6 @@ package com.litl.marbelmayhem.views
         private static const PLAY_STATE:Number = 4;
         private static const OFF_STATE:Number = 0;
 
-        private var _stage:Stage;
         private var _index:int = 0;
         private var model:GameManager = GameManager.getInstance();
 
@@ -28,9 +27,8 @@ package com.litl.marbelmayhem.views
         private var one:Loader;
         private var play:Loader;
 
-        public function CountDown(e:Stage) {
+        public function CountDown() {
             super();
-            _stage = e;
             createChildren();
             model.countdown.addEventListener(TimerEvent.TIMER, changeCount);
             model.countdown.addEventListener(TimerEvent.TIMER_COMPLETE, turnCountdownOff);
@@ -39,19 +37,19 @@ package com.litl.marbelmayhem.views
         private function createChildren():void {
             one = new Loader();
             one.load(new URLRequest("../assets/countdown/1.png"));
-            _stage.addChild(one);
+            addChild(one);
 
             two = new Loader();
             two.load(new URLRequest("../assets/countdown/2.png"));
-            _stage.addChild(two);
+            addChild(two);
 
             three = new Loader();
             three.load(new URLRequest("../assets/countdown/3.png"));
-            _stage.addChild(three);
+            addChild(three);
 
             play = new Loader();
             play.load(new URLRequest("../assets/countdown/play.png"));
-            _stage.addChild(play);
+            addChild(play);
             updateDisplay();
             updateLayout();
         }

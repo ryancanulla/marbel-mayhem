@@ -9,7 +9,6 @@ package com.litl.marbelmayhem.views
     import away3d.primitives.Skybox;
     import away3d.primitives.Sphere;
 
-    import com.litl.helpers.richinput.Stats;
     import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.model.GameManager;
     import com.litl.marbelmayhem.utils.GameMaterials;
@@ -30,6 +29,7 @@ package com.litl.marbelmayhem.views
         public var floor:Plane;
         public var world:Skybox;
         public var scoreboard:Scoreboard;
+        public var countdown:CountDown;
 
         public function ChannelView(service:LitlService) {
             super();
@@ -42,14 +42,20 @@ package com.litl.marbelmayhem.views
             createScene();
             createScoreboard();
             createStats(service);
+            createCountdown();
 
             updateLayout();
             addEventListener(Event.ENTER_FRAME, renderScene);
         }
 
         private function createStats(service:LitlService):void {
-            var stats:Stats = new Stats(service);
-            addChild(stats);
+            //var stats:Stats = new Stats(service);
+            //addChild(stats);
+        }
+
+        private function createCountdown():void {
+            countdown = new CountDown();
+            addChild(countdown);
         }
 
         protected function createView():void {

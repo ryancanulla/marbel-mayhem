@@ -1,6 +1,5 @@
 package com.litl.marbelmayhem.model.service
 {
-    import com.litl.helpers.richinput.Stats;
     import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.views.CardView;
     import com.litl.marbelmayhem.views.ChannelView;
