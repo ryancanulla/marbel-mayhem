@@ -48,16 +48,8 @@ package
 
             //countdown = new CountDown(this.stage);
             //gameResults = new GameResults(this.stage);
-
-            creatStatsMonitor();
         }
 
-        private function creatStatsMonitor():void {
-            var stats:Stats = new Stats();
-            stats.x = 0;
-            stats.y = 80;
-            addChild(stats);
-        }
     }
 }
 

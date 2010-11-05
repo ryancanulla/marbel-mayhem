@@ -32,7 +32,6 @@ package com.litl.marbelmayhem.views
         }
 
         protected function init():void {
-
             createChildren();
         }
 
@@ -48,11 +47,7 @@ package com.litl.marbelmayhem.views
         }
 
         protected function updateLayout():void {
-//            playerLifeOne.x = 0;
-//            playerLifeTwo.x = 25;
-//            playerLifeThree.x = 50;
-//            playerLifeFour.x = 75;
-//            playerLifeFive.x = 100;
+
         }
 
         protected function updateProperties(e:MarbleEvent):void {

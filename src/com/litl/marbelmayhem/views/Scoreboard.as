@@ -40,6 +40,8 @@ package com.litl.marbelmayhem.views
             createChildren();
             model.addEventListener(MarbleEvent.SCORE_CHANGED, updateProperties);
             model.addEventListener(MarbleEvent.TIMER_TICK, updateProperties);
+            model.addEventListener(MarbleEvent.ADD_PLAYER, updateProperties);
+            model.addEventListener(MarbleEvent.REMOVE_PLAYER, updateProperties);
         }
 
         private function createChildren():void {
@@ -103,14 +105,32 @@ package com.litl.marbelmayhem.views
         private function updateProperties(e:Event = null):void {
             switch (model.playersInGame.length) {
                 case 0:
-                    player1Score.text = "0";
-                    player2Score.text = "0";
+                    player1Icon.visible = false;
+                    player1Score.visible = false;
+                    player1Life.visible = false;
+                    player2Icon.visible = false;
+                    player2Score.visible = false;
+                    player2Life.visible = false;
                     break;
                 case 1:
+                    player2Icon.visible = false;
+                    player2Life.visible = false;
+                    player2Score.visible = false;
+
+                    player1Icon.visible = true;
+                    player1Life.visible = true;
+                    player1Score.visible = true;
                     player1Score.text = Player(model.playersInGame[0]).score.toString();
                     break;
                 case 2:
+                    player1Icon.visible = true;
+                    player1Life.visible = true;
+                    player1Score.visible = true;
                     player1Score.text = Player(model.playersInGame[0]).score.toString();
+
+                    player2Icon.visible = true;
+                    player2Life.visible = true;
+                    player2Score.visible = true;
                     player2Score.text = Player(model.playersInGame[1]).score.toString();
                     break
             }
