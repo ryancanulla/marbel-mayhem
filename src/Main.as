@@ -14,7 +14,7 @@ package
 
     import net.hires.debug.DoobStats;
 
-    [SWF(width="1280", height="800", framerate="60")]
+    [SWF(width="1280", height="800", framerate="60", backgroundColor="000000")]
     public class Main extends Sprite
     {
 

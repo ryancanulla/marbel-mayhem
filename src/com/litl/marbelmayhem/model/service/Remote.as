@@ -23,9 +23,12 @@ package com.litl.marbelmayhem.model.service
 
         override protected function onAccelerometerEvent(e:AccelerometerEvent):void {
             for (var i:uint = 0; i < model.playersInGame.length; i++) {
-                if (Player(model.playersInGame[i]).remoteID == remoteID) {
-                    Player(model.playersInGame[i]).vx += e.accelerationY * 3;
-                    Player(model.playersInGame[i]).vz += e.accelerationX * 3;
+                var player:Player = model.playersInGame[i];
+
+                if (player.remoteID == remoteID) {
+
+                    player.vx += e.accelerationY * 3;
+                    player.vz += e.accelerationX * 3;
                 }
             }
         }
@@ -34,8 +37,9 @@ package com.litl.marbelmayhem.model.service
             remoteID = remote.id;
 
             if (remote.hasAccelerometer) {
-                remote.accelerometer.setXSmoothingLevel(AccelerometerSmoothingLevel.OFF);
-                remote.accelerometer.setYSmoothingLevel(AccelerometerSmoothingLevel.OFF);
+                remote.accelerometer.setXSmoothingLevel(AccelerometerSmoothingLevel.HIGH);
+                remote.accelerometer.setYSmoothingLevel(AccelerometerSmoothingLevel.HIGH);
+                remote.accelerometer.setZSmoothingLevel(AccelerometerSmoothingLevel.HIGH);
                 remote.accelerometer.addEventListener(AccelerometerEvent.UPDATE,
                                                       onAccelerometerEvent, false, 0, true);
             }

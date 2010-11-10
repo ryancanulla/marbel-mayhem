@@ -1,6 +1,12 @@
 package com.litl.marbelmayhem.controller
 {
 
+    import alternativa.engine3d.core.Object3D;
+    import alternativa.engine3d.core.Object3DContainer;
+    import alternativa.engine3d.core.Sorting;
+    import alternativa.engine3d.objects.Sprite3D;
+    import alternativa.engine3d.primitives.Plane;
+
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
     import com.litl.marbelmayhem.model.service.LitlServiceManager;
@@ -10,10 +16,14 @@ package com.litl.marbelmayhem.controller
     import com.litl.marbelmayhem.vo.Player;
     import com.litl.sdk.enum.View;
     import com.litl.sdk.message.UserInputMessage;
+    import com.litl.sdk.model.ChannelProperties;
     import com.litl.sdk.service.LitlService;
 
+    import flash.display.DisplayObject;
+    import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.Point;
+    import flash.geom.Vector3D;
 
     public class GameController
     {
@@ -57,8 +67,8 @@ package com.litl.marbelmayhem.controller
 
             player.x += player.vx;
             player.z -= player.vz;
-            player.roll(player.vx * -.5);
-            player.pitch(player.vz * -.5);
+            player.rotationX = player.vx * .05;
+            player.rotationZ = player.vz * .05;
         }
 
         public function addPlayerToStage(e:MarbleEvent):void {
@@ -75,9 +85,13 @@ package com.litl.marbelmayhem.controller
 
         protected function checkForCollision():Boolean {
             if (model.playersInGame.length > 1) {
-                var distX:Number = Player(model.playersInGame[1]).x - Player(model.playersInGame[0]).x;
-                var distZ:Number = Player(model.playersInGame[1]).z - Player(model.playersInGame[0]).z;
-                var dist:Number = Math.sqrt(distX * distX + distZ * distZ);
+                var player1:Player = model.playersInGame[0];
+                var player2:Player = model.playersInGame[1];
+
+                var dx:Number = player1.x - player2.x;
+                var dy:Number = player1.y - player2.y;
+                var dz:Number = player1.z - player2.z;
+                var dist:Number = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
                 if (dist < Player(model.playersInGame[1]).radius * 2) {
                     return true;
@@ -89,6 +103,7 @@ package com.litl.marbelmayhem.controller
             else {
                 return false;
             }
+            return false;
         }
 
         protected function swapVelovities():void {
@@ -100,27 +115,45 @@ package com.litl.marbelmayhem.controller
             Player(model.playersInGame[1]).vz = tempZ * 1.5;
         }
 
-        protected function addGravity(player:Player):void {
-            if (player.x < ChannelView(_currentView).floor.x - ChannelView(_currentView).floor.width / 2) {
-                player.y -= GRAVITY;
+        protected function playerInBounds(player:Player):Boolean {
+            var floor:Plane = ChannelView(_currentView).floor;
+
+            if (player.x - 100 > floor.x + floor.boundMaxX) { // right
+                return false;
             }
-            else if (player.x > ChannelView(_currentView).floor.x + ChannelView(_currentView).floor.width / 2) {
-                player.y -= GRAVITY;
+            else if (player.x + 100 < floor.x + floor.boundMinX) { // left
+                return false;
             }
-            else if (player.z > ChannelView(_currentView).floor.z + ChannelView(_currentView).floor.height / 2) {
-                player.y -= GRAVITY;
+            else if (player.z - 20 < floor.z - floor.boundMaxX) { // front
+                return false;
             }
-            else if (player.z < ChannelView(_currentView).floor.z - ChannelView(_currentView).floor.height / 2) {
-                player.y -= GRAVITY;
+            else if (player.z - 325 > floor.z + floor.boundMaxX) { // back
+                return false;
             }
 
-            // if under the floor then keep falling
-            if (player.y < ChannelView(_currentView).floor.y) {
-                player.y -= GRAVITY;
+            if (player.y > floor.y) {
+                return false;
+            }
+            return true;
+        }
+
+        protected function addGravity(player:Player):void {
+            if (!playerInBounds(player)) {
+                var channelView:ChannelView = _currentView as ChannelView;
+                var container:Object3DContainer = channelView.container;
+                var floor:Plane = channelView.floor;
+
+                player.y += GRAVITY;
+
+                if (!player.isFalling) {
+                    channelView.container.swapChildren(player, floor);
+                    player.isFalling = true;
+                }
+
             }
 
             // you die after falling 1000 ft
-            if (player.y < -1000) {
+            if (player.y > 1000) {
                 if (model.gameInProgress) {
                     model.playerDied(player);
                 }
@@ -144,12 +177,13 @@ package com.litl.marbelmayhem.controller
                 }
 
                 for (var i:uint = 0; i < model.playersInGame.length; i++) {
-                    movePlayer(model.playersInGame[i] as Player);
-                    addGravity(model.playersInGame[i] as Player);
+                    var player:Player = model.playersInGame[i];
+                    movePlayer(player);
+                    addGravity(player);
                 }
 
-                // render the 3d scene
-                ChannelView(_currentView).awayWorld.render();
+                    // render the 3d scene
+                    //ChannelView(_currentView).camera.render();
             }
         }
 
@@ -163,9 +197,14 @@ package com.litl.marbelmayhem.controller
         }
 
         private function resetObject(player:Player):void {
-            player.x = ChannelView(_currentView).floor.x + (Math.random() * 400);
-            player.y = ChannelView(_currentView).floor.y + 50;
-            player.z = ChannelView(_currentView).floor.z;
+            var channelView:ChannelView = _currentView as ChannelView;
+            var floor:Plane = channelView.floor;
+
+            player.x = floor.boundMinX + (Math.random() * floor.boundMaxX);
+            player.y = floor.y;
+            player.z = floor.z;
+            player.isFalling = false;
+            channelView.container.swapChildren(player, floor);
         }
 
         private function calculateScores(hit:Boolean):void {
@@ -186,18 +225,7 @@ package com.litl.marbelmayhem.controller
                 }
             }
             else if (hit == false) {
-                //                var center:Point = new Point(floor.x / 2, floor.height / 2);
-                //
-                //                var dist0X:Number = player0.x - center.x;
-                //                var dist0Z:Number = player0.z - center.y;
-                //                var dist0:Number = Math.sqrt(dist0X * dist0X + dist0Z * dist0Z);
-                //
-                //                var dist1X:Number = player1.x - center.x;
-                //                var dist1Z:Number = player1.z - center.y;
-                //                var dist1:Number = Math.sqrt(dist1X * dist1X + dist1Z * dist1Z);
-                //
-                //                trace("player 1: " + dist0);
-                //                trace("player 2: " + dist1);
+
             }
         }
 
