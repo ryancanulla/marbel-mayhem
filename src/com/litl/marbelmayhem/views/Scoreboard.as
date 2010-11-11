@@ -2,8 +2,10 @@ package com.litl.marbelmayhem.views
 {
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
+    import com.litl.marbelmayhem.utils.GameAssets;
     import com.litl.marbelmayhem.vo.Player;
 
+    import flash.display.Bitmap;
     import flash.display.Loader;
     import flash.display.Shape;
     import flash.display.Sprite;
@@ -12,19 +14,21 @@ package com.litl.marbelmayhem.views
     import flash.events.Event;
     import flash.net.URLRequest;
     import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
 
     public class Scoreboard extends ViewBase
     {
         private var _view:ViewBase;
         private var model:GameManager = GameManager.getInstance();
+        private var gameAssets:GameAssets = new GameAssets();
 
         private var background:Sprite;
-        private var timeBG:Loader;
-        private var logo:Loader;
+        private var timeBG:Bitmap;
+        private var logo:Bitmap;
         private var timeDisplay:TextField;
-        private var player1Icon:Loader;
-        private var player2Icon:Loader;
+        private var player1Icon:Bitmap;
+        private var player2Icon:Bitmap;
         private var player1Score:TextField;
         private var player2Score:TextField;
         private var player1Life:PlayerOneLife;
@@ -47,15 +51,15 @@ package com.litl.marbelmayhem.views
         private function createChildren():void {
             background = new Sprite();
             background.graphics.beginFill(0x333333);
-            background.graphics.drawRect(0, 0, 1280, 800 * .1);
+            background.graphics.drawRect(0, 0, 1280, 800 * .15);
             addChild(background);
 
-            logo = new Loader;
-            logo.load(new URLRequest("../assets/logo.gif"));
+            logo = gameAssets.logoBitmap;
+            logo.cacheAsBitmap = true;
             addChild(logo);
 
-            timeBG = new Loader;
-            timeBG.load(new URLRequest("../assets/time-bg.gif"));
+            timeBG = gameAssets.timeBGBitmap;
+            timeBG.cacheAsBitmap = true;
             addChild(timeBG);
 
             var timeFormat:TextFormat = new TextFormat();
@@ -74,23 +78,25 @@ package com.litl.marbelmayhem.views
             scoreFormat.size = 26;
             scoreFormat.color = 0xffffff;
 
-            player1Icon = new Loader;
-            player1Icon.load(new URLRequest("../assets/scoreboard/playerOneIcon.png"));
+            player1Icon = gameAssets.playerOneIconBitmap;
+            player1Icon.cacheAsBitmap = true;
             addChild(player1Icon);
 
             player1Score = new TextField();
             player1Score.defaultTextFormat = scoreFormat;
+            player1Score.autoSize = TextFieldAutoSize.LEFT;
             player1Score.setTextFormat(scoreFormat);
             addChild(player1Score);
 
             player1Life = new PlayerOneLife();
             addChild(player1Life);
 
-            player2Icon = new Loader;
-            player2Icon.load(new URLRequest("../assets/scoreboard/playerTwoIcon.png"));
+            player2Icon = gameAssets.playerTwoIconBitmap;
+            player2Icon.cacheAsBitmap = true;
             addChild(player2Icon);
 
             player2Score = new TextField();
+            player1Score.autoSize = TextFieldAutoSize.LEFT;
             player2Score.defaultTextFormat = scoreFormat;
             player2Score.setTextFormat(scoreFormat);
             addChild(player2Score);
@@ -98,7 +104,6 @@ package com.litl.marbelmayhem.views
             player2Life = new PlayerTwoLife();
             addChild(player2Life);
 
-            updateLayout();
             updateProperties();
         }
 
@@ -137,34 +142,33 @@ package com.litl.marbelmayhem.views
             timeDisplay.text = model.time;
         }
 
-        private function updateLayout():void {
-            logo.x = 50;
-            logo.y = 2;
+        override protected function sizeUpdated():void {
+            logo.x = this.width * .10;
+            logo.y = (background.height / 2) - (logo.height / 2);
 
-            timeBG.x = 525;
-            timeBG.y = 10;
-            timeDisplay.x = 590;
-            timeDisplay.y = 15;
+            timeBG.x = (this.width / 2) - (timeBG.width / 2);
+            timeBG.y = (background.height / 2) - (timeBG.height / 2);
 
-            player1Icon.x = 750;
-            player1Icon.y = 10;
+            timeDisplay.x = (timeBG.x + (timeBG.width / 2)) - (timeDisplay.width / 2);
+            timeDisplay.y = (background.height / 2) - (timeBG.height / 2);
 
-            player1Score.width = 300;
-            player1Score.x = 890;
-            player1Score.y = 7;
+            player1Icon.x = timeBG.x + timeBG.width + 50;
+            player1Icon.y = background.height * .20;
 
-            player1Life.x = 750;
-            player1Life.y = 40;
+            player1Score.x = (player1Icon.x + player1Icon.width) + 25;
+            player1Score.y = background.height * .20;
 
-            player2Icon.x = 1000;
-            player2Icon.y = 10;
+            player1Life.x = player1Icon.x;
+            player1Life.y = background.height * .50;
 
-            player2Score.width = 300;
+            player2Icon.x = player1Score.x + player1Score.width + 50;
+            player2Icon.y = background.height * .20;
+
             player2Score.x = 1145;
-            player2Score.y = 7;
+            player2Score.y = background.height * .20;
 
-            player2Life.x = 1000;
-            player2Life.y = 40;
+            player2Life.x = player2Icon.x;
+            player2Life.y = background.height * .50;
         }
     }
 }

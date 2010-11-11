@@ -8,6 +8,11 @@ package com.litl.marbelmayhem.utils
         private var GrassImage:Class;
         public var grassBitmap:Bitmap = new GrassImage();
 
+        [Embed(source="/../assets/marbleBG.png")]
+        private var BackgroundImage:Class;
+        public var backgroundBitmapOne:Bitmap = new BackgroundImage();
+        public var backgroundBitmapTwo:Bitmap = new BackgroundImage();
+
         [Embed(source="/../assets/red-marble.png")]
         private var MarbleImage:Class;
         public var marbleBitmap:Bitmap = new MarbleImage();

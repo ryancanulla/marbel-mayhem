@@ -19,7 +19,7 @@ package com.litl.marbelmayhem.vo
         public var radius:Number;
         public var isFalling:Boolean;
 
-        public function Player(radius:Number = 40, radialSegments:uint = 15, heightSegments:uint = 15, reverse:Boolean = false, material:Material = null) {
+        public function Player(radius:Number = 60, radialSegments:uint = 15, heightSegments:uint = 15, reverse:Boolean = false, material:Material = null) {
             super(radius, radialSegments, heightSegments, reverse, material);
             this.radius = radius;
         }

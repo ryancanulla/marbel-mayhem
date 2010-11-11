@@ -199,7 +199,7 @@ package net.hires.debug
 class Colors
 {
 
-    public var bg:uint = 0x574D1F;
+    public var bg:uint = 0x082863;
     public var fps:uint = 0xffff00;
     public var ms:uint = 0x00ff00;
     public var mem:uint = 0x00ffff;

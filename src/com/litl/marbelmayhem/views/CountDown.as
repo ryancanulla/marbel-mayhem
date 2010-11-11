@@ -1,17 +1,20 @@
 package com.litl.marbelmayhem.views
 {
     import com.litl.marbelmayhem.model.GameManager;
+    import com.litl.marbelmayhem.utils.CountdownAssets;
 
+    import flash.display.Bitmap;
     import flash.display.Loader;
     import flash.display.Sprite;
     import flash.display.Stage;
     import flash.events.TimerEvent;
     import flash.net.URLRequest;
+    import flash.utils.Dictionary;
     import flash.utils.Timer;
 
     import org.osmf.events.TimeEvent;
 
-    public class CountDown extends Sprite
+    public class CountDown extends ViewBase
     {
         private static const THREE_STATE:Number = 1;
         private static const TWO_STATE:Number = 2;
@@ -21,71 +24,79 @@ package com.litl.marbelmayhem.views
 
         private var _index:int = 0;
         private var model:GameManager = GameManager.getInstance();
+        private var gameAssets:CountdownAssets = new CountdownAssets();
 
-        private var three:Loader;
-        private var two:Loader;
-        private var one:Loader;
-        private var play:Loader;
+        private var three:Bitmap;
+        private var two:Bitmap;
+        private var one:Bitmap;
+        private var play:Bitmap;
+
+        protected var currentView:Bitmap;
+        protected var views:Dictionary;
 
         public function CountDown() {
             super();
             createChildren();
+            views = new Dictionary();
             model.countdown.addEventListener(TimerEvent.TIMER, changeCount);
             model.countdown.addEventListener(TimerEvent.TIMER_COMPLETE, turnCountdownOff);
         }
 
         private function createChildren():void {
-            one = new Loader();
-            one.load(new URLRequest("../assets/countdown/1.png"));
-            addChild(one);
 
-            two = new Loader();
-            two.load(new URLRequest("../assets/countdown/2.png"));
-            addChild(two);
+            one = gameAssets.OneBitmap;
+            one.cacheAsBitmap = true;
+            //addChild(one);
 
-            three = new Loader();
-            three.load(new URLRequest("../assets/countdown/3.png"));
-            addChild(three);
+            two = gameAssets.TwoBitmap;
+            two.cacheAsBitmap = true;
+            //addChild(two);
 
-            play = new Loader();
-            play.load(new URLRequest("../assets/countdown/play.png"));
-            addChild(play);
-            updateDisplay();
-            updateLayout();
+            three = gameAssets.ThreeBitmap;
+            three.cacheAsBitmap = true;
+            //addChild(three);
+
+            play = gameAssets.PlayBitmap;
+            play.cacheAsBitmap = true;
+            //addChild(play);
         }
 
         private function updateDisplay():void {
+            if (currentView && contains(currentView)) {
+                removeChild(currentView);
+            }
+
+            if (views == null)
+                views = new Dictionary(false);
+
+            currentView = views[_index.toString()] as Bitmap;
+
             switch (_index) {
-                case THREE_STATE:
-                    three.visible = true;
-                    two.visible = false;
-                    one.visible = false
-                    play.visible = false;
+                default:
+                    throw new Error("Unknown view state");
                     break;
-                case TWO_STATE:
-                    three.visible = false;
-                    two.visible = true;
-                    one.visible = false
-                    play.visible = false;
+
+                case OFF_STATE:
+                    currentView = new Bitmap();
                     break;
                 case ONE_STATE:
-                    three.visible = false;
-                    two.visible = false;
-                    one.visible = true;
-                    play.visible = false;
+                    currentView = one;
+                    break;
+                case TWO_STATE:
+                    currentView = two;
+                    break;
+                case THREE_STATE:
+                    currentView = three;
                     break;
                 case PLAY_STATE:
-                    three.visible = false;
-                    two.visible = false;
-                    one.visible = false
-                    play.visible = true;
+                    currentView = play;
                     break;
-                case OFF_STATE:
-                    three.visible = false;
-                    two.visible = false;
-                    one.visible = false
-                    play.visible = false;
-                    break;
+            }
+
+            views[_index.toString()] = currentView;
+
+            if (!contains(currentView)) {
+                addChild(currentView);
             }
 
         }
@@ -110,21 +121,23 @@ package com.litl.marbelmayhem.views
             updateDisplay();
         }
 
-        private function updateLayout():void {
-            one.x = 550;
-            one.y = 200;
-            two.x = 550;
-            two.y = 200;
-            three.x = 550;
-            three.y = 200;
-            play.x = 300;
-            play.y = 200;
+        override protected function sizeUpdated():void {
+            one.x = this.width / 2 - one.width / 2;
+            one.y = this.height / 2 - one.height / 2;
+
+            two.x = this.width / 2 - two.width / 2;
+            two.y = this.height / 2 - two.height / 2;
+
+            three.x = this.width / 2 - three.width / 2;
+            three.y = this.height / 2 - three.height / 2;
+
+            play.x = this.width / 2 - play.width / 2;
+            play.y = this.height / 2 - play.height / 2;
         }
 
         public function turnCountdownOff(e:TimerEvent):void {
             _index = OFF_STATE;
             updateDisplay();
         }
-
     }
 }

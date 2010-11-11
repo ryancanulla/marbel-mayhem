@@ -1,5 +1,6 @@
 package com.litl.marbelmayhem.model.service
 {
+    import com.litl.helpers.channel.BaseChannel;
     import com.litl.marbelmayhem.views.CardView;
     import com.litl.marbelmayhem.views.ChannelView;
     import com.litl.marbelmayhem.views.ViewBase;
@@ -13,7 +14,7 @@ package com.litl.marbelmayhem.model.service
     import flash.display.Sprite;
     import flash.utils.Dictionary;
 
-    public class LitlServiceManager extends Sprite
+    public class LitlServiceManager
     {
         private var _service:LitlService;
         private var remoteManager:LitlRemoteManager;
@@ -31,7 +32,7 @@ package com.litl.marbelmayhem.model.service
         }
 
         protected function connect():void {
-            _service.connect("", "", "", false);
+            _service.connect("com.litl.marblemayhem", "Marble Mayhem", "0.01", false);
         }
 
         protected function createRemoteManager():void {
@@ -48,7 +49,6 @@ package com.litl.marbelmayhem.model.service
                 connect();
                 createRemoteManager();
             }
-
         }
 
     }

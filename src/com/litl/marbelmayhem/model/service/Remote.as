@@ -26,7 +26,6 @@ package com.litl.marbelmayhem.model.service
                 var player:Player = model.playersInGame[i];
 
                 if (player.remoteID == remoteID) {
-
                     player.vx += e.accelerationY * 3;
                     player.vz += e.accelerationX * 3;
                 }

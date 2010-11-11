@@ -16,8 +16,9 @@ package com.litl.marbelmayhem.model.service
     {
         private var _service:LitlService;
         private var _currentViewState:String;
-        protected var controller:GameController = GameController.getInstance();
+
         protected var _view:Sprite;
+        protected var controller:GameController = GameController.getInstance();
         protected var currentView:ViewBase;
         protected var views:Dictionary;
 

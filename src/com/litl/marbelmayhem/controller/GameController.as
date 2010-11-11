@@ -35,7 +35,7 @@ package com.litl.marbelmayhem.controller
 
         private static const FRICTION:Number = .95;
         private static const SPEED:Number = 3;
-        private static const GRAVITY:Number = 17;
+        private static const GRAVITY:Number = 37;
         private static const SPRING:Number = .2;
         private static const MASS:Number = 1;
 
@@ -146,17 +146,19 @@ package com.litl.marbelmayhem.controller
                 player.y += GRAVITY;
 
                 if (!player.isFalling) {
-                    channelView.container.swapChildren(player, floor);
+                    var index:int = channelView.container.getChildIndex(player);
+                    channelView.container.swapChildren(channelView.container.getChildAt(index), floor);
                     player.isFalling = true;
                 }
 
             }
 
             // you die after falling 1000 ft
-            if (player.y > 1000) {
+            if (player.y > 1500) {
                 if (model.gameInProgress) {
                     model.playerDied(player);
                 }
+
                 resetObject(player);
             }
         }
@@ -204,7 +206,9 @@ package com.litl.marbelmayhem.controller
             player.y = floor.y;
             player.z = floor.z;
             player.isFalling = false;
-            channelView.container.swapChildren(player, floor);
+
+            var index:int = channelView.container.getChildIndex(player);
+            channelView.container.swapChildren(channelView.container.getChildAt(index), floor);
         }
 
         private function calculateScores(hit:Boolean):void {
