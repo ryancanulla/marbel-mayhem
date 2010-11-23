@@ -21,6 +21,7 @@ package com.litl.marbelmayhem.model
         private var _player1:Player;
         private var _player2:Player;
         private var _gameInProgress:Boolean;
+        private var _gamePaused:Boolean;
         private var _gameViewState:String;
         private var _playersInGame:Array;
 
@@ -74,11 +75,20 @@ package com.litl.marbelmayhem.model
         }
 
         private function resetPlayers():void {
-
             for (var i:uint = 0; i < _playersInGame.length; i++) {
                 var player:Player = _playersInGame[i] as Player;
                 player.lives = maxLives;
                 player.score = 0;
+            }
+
+            dispatchEvent(new MarbleEvent(MarbleEvent.SCORE_CHANGED));
+        }
+
+        private function resetPlayerVelocities():void {
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+                var player:Player = _playersInGame[i] as Player;
+                player.vx = 0;
+                player.vz = 0;
             }
 
             dispatchEvent(new MarbleEvent(MarbleEvent.SCORE_CHANGED));
@@ -96,6 +106,7 @@ package com.litl.marbelmayhem.model
 
         public function startNewGame():void {
             _gameInProgress = false;
+            _gamePaused = true;
             dispatchEvent(new Event(MarbleEvent.START_NEW_GAME, true));
             countdown.reset();
             countdown.start();
@@ -107,12 +118,16 @@ package com.litl.marbelmayhem.model
 
         public function pauseGame():void {
             _gameInProgress = false;
+            _gamePaused = true;
             gameTimer.stop();
         }
 
         public function resumeGame(e:TimerEvent = null):void {
             _gameInProgress = true;
+            _gamePaused = false;
             gameTimer.start();
+
+            resetPlayerVelocities();
         }
 
         public function gameOver(e:TimerEvent = null):void {
@@ -122,7 +137,7 @@ package com.litl.marbelmayhem.model
         public function addToScores(player:Player, score:uint):void {
             if (_gameInProgress) {
                 for (var i:uint = 0; i < _playersInGame.length; i++) {
-                    if (player.remoteID == Player(_playersInGame[i]).remoteID) {
+                    if (player.playerID == Player(_playersInGame[i]).playerID) {
                         Player(_playersInGame[i]).score += score;
                     }
                 }
@@ -141,12 +156,14 @@ package com.litl.marbelmayhem.model
 
         public function playerDied(player:Player):void {
             for (var i:uint = 0; i < _playersInGame.length; i++) {
-                if (player.remoteID !== Player(_playersInGame[i]).remoteID) {
-                    addToScores(_playersInGame[i], 200);
+                var otherPlayer:Player = _playersInGame[i] as Player;
+
+                if (player.playerID !== otherPlayer.playerID) {
+                    addToScores(otherPlayer, 100);
                 }
 
-                if (player.remoteID == Player(_playersInGame[i]).remoteID) {
-                    Player(_playersInGame[i]).lives -= 1;
+                if (player.remoteID == otherPlayer.remoteID) {
+                    otherPlayer.lives -= 1;
 
                     checkForRemainingLives();
                     var event:MarbleEvent = new MarbleEvent(MarbleEvent.PLAYER_DIED);
@@ -217,6 +234,22 @@ package com.litl.marbelmayhem.model
         public function get playersInGame():Array {
             return _playersInGame;
         }
+
+        public function get gamePaused():Boolean {
+            return _gamePaused;
+        }
+
+        public function getPlayer(playerPosition:uint):Player {
+            for (var i:uint = 0; i < _playersInGame.length; i++) {
+                var player:Player = _playersInGame[i];
+
+                if (player.playerID == playerPosition) {
+                    return player;
+                }
+            }
+            return null;
+        }
+
     }
 }
 

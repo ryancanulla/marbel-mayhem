@@ -6,6 +6,7 @@ package com.litl.marbelmayhem.vo
     public class Player extends Sphere
     {
         public var remoteID:String;
+        public var playerID:uint;
         public var isPlaying:Boolean = false;
         public var playerName:String;
         public var score:Number = 0;

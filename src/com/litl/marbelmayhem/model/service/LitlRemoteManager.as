@@ -25,6 +25,7 @@ package com.litl.marbelmayhem.model.service
             if (model.playersInGame.length < 2) {
                 var player:Player = new Player();
                 player.remoteID = remote.id;
+                player.playerID = model.playersInGame.length + 1;
                 model.addPlayer(player);
             }
         }

@@ -68,7 +68,7 @@ package com.litl.marbelmayhem.views
             timeFormat.color = 0x000000;
 
             timeDisplay = new TextField();
-            timeDisplay.text = "3:33";
+            timeDisplay.autoSize = TextFieldAutoSize.LEFT;
             timeDisplay.defaultTextFormat = timeFormat;
             timeDisplay.setTextFormat(timeFormat);
             addChild(timeDisplay);
@@ -125,18 +125,21 @@ package com.litl.marbelmayhem.views
                     player1Icon.visible = true;
                     player1Life.visible = true;
                     player1Score.visible = true;
-                    player1Score.text = Player(model.playersInGame[0]).score.toString();
+                    player1Life.remoteID = Player(model.getPlayer(1)).remoteID;
+                    player1Score.text = Player(model.getPlayer(1)).score.toString();
                     break;
                 case 2:
                     player1Icon.visible = true;
                     player1Life.visible = true;
                     player1Score.visible = true;
-                    player1Score.text = Player(model.playersInGame[0]).score.toString();
+                    player1Life.remoteID = Player(model.getPlayer(1)).remoteID;
+                    player1Score.text = Player(model.getPlayer(1)).score.toString();
 
                     player2Icon.visible = true;
                     player2Life.visible = true;
                     player2Score.visible = true;
-                    player2Score.text = Player(model.playersInGame[1]).score.toString();
+                    player2Life.remoteID = Player(model.getPlayer(2)).remoteID;
+                    player2Score.text = Player(model.getPlayer(2)).score.toString();
                     break
             }
             timeDisplay.text = model.time;
@@ -150,13 +153,13 @@ package com.litl.marbelmayhem.views
             timeBG.y = (background.height / 2) - (timeBG.height / 2);
 
             timeDisplay.x = (timeBG.x + (timeBG.width / 2)) - (timeDisplay.width / 2);
-            timeDisplay.y = (background.height / 2) - (timeBG.height / 2);
+            timeDisplay.y = (timeBG.y + (timeBG.height / 2)) - (timeBG.height / 2) + 5;
 
             player1Icon.x = timeBG.x + timeBG.width + 50;
             player1Icon.y = background.height * .20;
 
-            player1Score.x = (player1Icon.x + player1Icon.width) + 25;
-            player1Score.y = background.height * .20;
+            player1Score.x = (player1Icon.x + player1Icon.width) + 20;
+            player1Score.y = background.height * .17;
 
             player1Life.x = player1Icon.x;
             player1Life.y = background.height * .50;
@@ -164,8 +167,8 @@ package com.litl.marbelmayhem.views
             player2Icon.x = player1Score.x + player1Score.width + 50;
             player2Icon.y = background.height * .20;
 
-            player2Score.x = 1145;
-            player2Score.y = background.height * .20;
+            player2Score.x = (player2Icon.x + player2Icon.width) + 20;
+            player2Score.y = background.height * .17;
 
             player2Life.x = player2Icon.x;
             player2Life.y = background.height * .50;

@@ -19,6 +19,7 @@ package com.litl.marbelmayhem.views
         protected var player:Player;
         protected var playerLife:Loader;
         protected var lives:Dictionary;
+        protected var _remoteID:String;
         private static const MAX_LIVES:Number = 5;
 
         private var _total:Number = 5;
@@ -52,7 +53,7 @@ package com.litl.marbelmayhem.views
 
         protected function updateProperties(e:MarbleEvent):void {
             for (var i:uint = 0; i < MAX_LIVES; i++) {
-                if (i >= e.player.lives) {
+                if (i >= e.player.lives && _remoteID == e.player.remoteID) {
                     var playerLife:Loader = lives[i];
                     playerLife.visible = false;
                 }
@@ -64,6 +65,10 @@ package com.litl.marbelmayhem.views
                 var playerLife:Loader = lives[i];
                 playerLife.visible = true;
             }
+        }
+
+        public function set remoteID(e:String):void {
+            _remoteID = e;
         }
     }
 }

@@ -20,6 +20,7 @@ package com.litl.marbelmayhem.views
     import flash.display.Bitmap;
     import flash.display.Sprite;
     import flash.events.Event;
+    import flash.geom.ColorTransform;
     import flash.geom.Point;
     import flash.geom.Vector3D;
 
@@ -109,14 +110,18 @@ package com.litl.marbelmayhem.views
         }
 
         public function addPlayer(player:Player):void {
-            var material:FillMaterial = new FillMaterial(0xFF7700, 1, 1);
-
-            player.setMaterialToAllFaces(material);
             player.x = floor.boundMinX + (Math.random() * floor.boundMaxX);
             player.y = floor.y;
             player.z = floor.z;
-            player.setMaterialToAllFaces(new TextureMaterial(gameMaterials.marbleBitmap.bitmapData, false, true));
 
+            var texture:TextureMaterial;
+            if (player.playerID == 1) {
+                texture = new TextureMaterial(gameMaterials.playerOneMarbleBitmap.bitmapData);
+            } else if(player.playerID == 2) {
+                texture = new TextureMaterial(gameMaterials.playerTwoMarbleBitmap.bitmapData);
+            }
+
+            player.setMaterialToAllFaces(texture);
             container.addChild(player);
         }
 
@@ -143,9 +148,9 @@ package com.litl.marbelmayhem.views
         }
 
         protected function renderScene(e:Event):void {
-            floor.rotationY -= 1.04 * Math.PI / 180;
-            background1.x += 1.4;
-            background2.x += 1.4;
+            //floor.rotationY += .4 * Math.PI / 180;
+            background1.x += .4;
+            background2.x += .4;
 
             if (background1.x > this.width) {
                 background1.x = (background2.x + 10) - (background1.width * -1);

@@ -11,11 +11,16 @@ package com.litl.marbelmayhem.utils
         [Embed(source="/../assets/marbleBG.png")]
         private var BackgroundImage:Class;
         public var backgroundBitmapOne:Bitmap = new BackgroundImage();
+
         public var backgroundBitmapTwo:Bitmap = new BackgroundImage();
 
         [Embed(source="/../assets/red-marble.png")]
-        private var MarbleImage:Class;
-        public var marbleBitmap:Bitmap = new MarbleImage();
+        private var PlayerOneMarbleImage:Class;
+        public var playerOneMarbleBitmap:Bitmap = new PlayerOneMarbleImage();
+
+        [Embed(source="/../assets/green-marble.png")]
+        private var PlayerTwoMarbleImage:Class;
+        public var playerTwoMarbleBitmap:Bitmap = new PlayerTwoMarbleImage();
 
         [Embed(source="/../assets/blue-water/floor-texture.jpg")]
         private var FloorImage:Class;

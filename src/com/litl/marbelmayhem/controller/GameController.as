@@ -109,6 +109,7 @@ package com.litl.marbelmayhem.controller
         protected function swapVelovities():void {
             var tempX:Number = Player(model.playersInGame[0]).vx;
             var tempZ:Number = Player(model.playersInGame[0]).vz;
+
             Player(model.playersInGame[0]).vx = Player(model.playersInGame[1]).vx * 1.5;
             Player(model.playersInGame[0]).vz = Player(model.playersInGame[1]).vz * 1.5;
             Player(model.playersInGame[1]).vx = tempX * 1.5;
@@ -146,9 +147,17 @@ package com.litl.marbelmayhem.controller
                 player.y += GRAVITY;
 
                 if (!player.isFalling) {
-                    var index:int = channelView.container.getChildIndex(player);
-                    channelView.container.swapChildren(channelView.container.getChildAt(index), floor);
                     player.isFalling = true;
+
+                    container.setChildIndex(floor, container.numChildren);
+
+                    for (var i:uint = 0; i < model.playersInGame.length; i++) {
+                        var otherPlayer:Player = model.playersInGame[i];
+
+                        if (otherPlayer !== player) {
+                            container.setChildIndex(otherPlayer, container.numChildren);
+                        }
+                    }
                 }
 
             }
@@ -178,15 +187,32 @@ package com.litl.marbelmayhem.controller
                     calculateScores(false);
                 }
 
-                for (var i:uint = 0; i < model.playersInGame.length; i++) {
-                    var player:Player = model.playersInGame[i];
-                    movePlayer(player);
-                    addGravity(player);
+                if (!model.gamePaused) {
+                    for (var i:uint = 0; i < model.playersInGame.length; i++) {
+                        var player:Player = model.playersInGame[i];
+                        movePlayer(player);
+                        addGravity(player);
+                    }
+                    sortZ();
                 }
 
-                    // render the 3d scene
-                    //ChannelView(_currentView).camera.render();
             }
+        }
+
+        protected function sortZ():void {
+            var channelView:ChannelView = _currentView as ChannelView;
+            var container:Object3DContainer = channelView.container;
+
+            model.playersInGame.sortOn("z", Array.DESCENDING | Array.NUMERIC);
+
+            for (var i:uint = 0; i < model.playersInGame.length; i++) {
+                var player:Player = model.playersInGame[i];
+
+                if (!player.isFalling) {
+                    container.setChildIndex(player, container.numChildren);
+                }
+            }
+
         }
 
         private function startNewGame(e:UserInputMessage):void {
@@ -200,6 +226,7 @@ package com.litl.marbelmayhem.controller
 
         private function resetObject(player:Player):void {
             var channelView:ChannelView = _currentView as ChannelView;
+            var container:Object3DContainer = channelView.container;
             var floor:Plane = channelView.floor;
 
             player.x = floor.boundMinX + (Math.random() * floor.boundMaxX);
@@ -207,25 +234,37 @@ package com.litl.marbelmayhem.controller
             player.z = floor.z;
             player.isFalling = false;
 
-            var index:int = channelView.container.getChildIndex(player);
-            channelView.container.swapChildren(channelView.container.getChildAt(index), floor);
+            container.setChildIndex(player, container.numChildren);
         }
 
         private function calculateScores(hit:Boolean):void {
             if (hit == true) {
-                var player1:Player = model.playersInGame[0]
-                var player2:Player = model.playersInGame[1];
+                var player1:Player;
+                var player2:Player;
 
-                var player1TotalVelocity:Number = Math.abs(Math.round(Player(model.playersInGame[0]).vx + Player(model.playersInGame[0]).vz));
-                var player2TotalVelocity:Number = Math.abs(Math.round(Player(model.playersInGame[1]).vx + Player(model.playersInGame[1]).vz));
+                var player1TotalVelocity:Number;
+                var player2TotalVelocity:Number;
+
+                for (var i:uint = 0; i < model.playersInGame.length; i++) {
+                    var player:Player = model.playersInGame[i] as Player;
+
+                    if (player.playerID == 1) {
+                        player1 = player;
+                        player1TotalVelocity = Math.abs(Math.round(player1.vx + player1.vz));
+                    }
+                    else if (player.playerID == 2) {
+                        player2 = player;
+                        player2TotalVelocity = Math.abs(Math.round(player2.vx + player2.vz));
+                    }
+                }
 
                 if (player1TotalVelocity > player2TotalVelocity) {
-                    model.addToScores(player1, player1TotalVelocity - player2TotalVelocity);
-                    model.addWinningCollision(player1);
+                    model.addToScores(player2, player1TotalVelocity - player2TotalVelocity);
+                    model.addWinningCollision(player2);
                 }
                 else if (player2TotalVelocity > player1TotalVelocity) {
-                    model.addToScores(player2, player2TotalVelocity - player1TotalVelocity);
-                    model.addWinningCollision(player2);
+                    model.addToScores(player1, player2TotalVelocity - player1TotalVelocity);
+                    model.addWinningCollision(player1);
                 }
             }
             else if (hit == false) {

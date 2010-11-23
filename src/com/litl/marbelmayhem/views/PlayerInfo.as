@@ -31,11 +31,3 @@ package com.litl.marbelmayhem.views
         }
     }
 }
-
-var scoreFormat:TextFormat = new TextFormat();
-scoreFormat.font = "Calibri";
-scoreFormat.size = 26;
-scoreFormat.color = 0xffffff;
-
-player1Life = new PlayerOneLife();
-addChild(player1Life);
