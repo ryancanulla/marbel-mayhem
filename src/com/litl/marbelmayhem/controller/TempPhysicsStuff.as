@@ -82,7 +82,7 @@
 //                var overlap:Number = (player0.radius + player1.radius)
 //                    - Math.abs(x0 - x1);
 //
-//                x0 += vx0 / absV * overlap;
+//                rx0 += vx0 / absV * overlap;
 //                x1 += vx1 / absV * overlap;
 //
 //                // rotate positions back

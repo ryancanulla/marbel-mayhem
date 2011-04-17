@@ -22,6 +22,10 @@ package com.litl.marbelmayhem.model.service
         }
 
         override protected function onAccelerometerEvent(e:AccelerometerEvent):void {
+            trace("Acceleration X: " + e.accelerationX);
+            trace("Acceleration Y: " + e.accelerationY);
+            trace("Acceleration Z: " + e.accelerationZ);
+
             for (var i:uint = 0; i < model.playersInGame.length; i++) {
                 var player:Player = model.playersInGame[i];
 
