@@ -3,4 +3,5 @@ bin-debug
 html-template
 .actionScriptProperties
 .project
+.flexProperties
 .settings
