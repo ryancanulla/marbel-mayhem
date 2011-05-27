@@ -1,4 +1,4 @@
-package com.litl.marbelmayhem.controller
+package com.ryancanulla.marbelmayhem.controller
 {
     public class GameViewManager
     {

@@ -1,4 +1,4 @@
-package com.litl.marbelmayhem.vo
+package com.ryancanulla.marbelmayhem.vo
 {
 	public class RemoteData
 	{

@@ -1,4 +1,4 @@
-package com.litl.marbelmayhem.controller
+package com.ryancanulla.marbelmayhem.controller
 {
 
     import alternativa.engine3d.core.Object3D;
@@ -7,13 +7,13 @@ package com.litl.marbelmayhem.controller
     import alternativa.engine3d.objects.Sprite3D;
     import alternativa.engine3d.primitives.Plane;
 
-    import com.litl.marbelmayhem.events.MarbleEvent;
-    import com.litl.marbelmayhem.model.GameManager;
-    import com.litl.marbelmayhem.service.RemoteManager;
-    import com.litl.marbelmayhem.service.ServiceManager;
-    import com.litl.marbelmayhem.views.ChannelView;
-    import com.litl.marbelmayhem.views.ViewBase;
-    import com.litl.marbelmayhem.vo.Player;
+    import com.ryancanulla.marbelmayhem.events.MarbleEvent;
+    import com.ryancanulla.marbelmayhem.model.GameManager;
+    import com.ryancanulla.marbelmayhem.service.RemoteManager;
+    import com.ryancanulla.marbelmayhem.service.ServiceManager;
+    import com.ryancanulla.marbelmayhem.views.ChannelView;
+    import com.ryancanulla.marbelmayhem.views.ViewBase;
+    import com.ryancanulla.marbelmayhem.vo.Player;
 
     import flash.display.DisplayObject;
     import flash.display.Sprite;

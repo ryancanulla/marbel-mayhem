@@ -1,6 +1,6 @@
-package com.litl.marbelmayhem.views
+package com.ryancanulla.marbelmayhem.views
 {
-    import com.litl.marbelmayhem.events.MarbleEvent;
+    import com.ryancanulla.marbelmayhem.events.MarbleEvent;
 
     public class PlayerOneLife extends PlayerLife
     {

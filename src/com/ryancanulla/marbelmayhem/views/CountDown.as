@@ -1,7 +1,7 @@
-package com.litl.marbelmayhem.views
+package com.ryancanulla.marbelmayhem.views
 {
-    import com.litl.marbelmayhem.model.GameManager;
-    import com.litl.marbelmayhem.utils.CountdownAssets;
+    import com.ryancanulla.marbelmayhem.model.GameManager;
+    import com.ryancanulla.marbelmayhem.utils.CountdownAssets;
 
     import flash.display.Bitmap;
     import flash.display.Loader;

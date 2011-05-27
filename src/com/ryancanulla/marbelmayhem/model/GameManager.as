@@ -1,9 +1,9 @@
-package com.litl.marbelmayhem.model
+package com.ryancanulla.marbelmayhem.model
 {
-    import com.litl.marbelmayhem.controller.GameController;
-    import com.litl.marbelmayhem.events.MarbleEvent;
-    import com.litl.marbelmayhem.vo.Player;
-    
+    import com.ryancanulla.marbelmayhem.controller.GameController;
+    import com.ryancanulla.marbelmayhem.events.MarbleEvent;
+    import com.ryancanulla.marbelmayhem.vo.Player;
+
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.EventDispatcher;
@@ -172,7 +172,7 @@ package com.litl.marbelmayhem.model
             player.score = 0;
             _playersInGame.push(player);
 			player.playerID = _playersInGame.length;
-			
+
 			if (player.isMe)
 				_myPlayer = player;
 
@@ -246,7 +246,7 @@ package com.litl.marbelmayhem.model
             }
             return null;
         }
-		
+
 		public function get myPlayer():Player {
 			return _myPlayer;
 		}

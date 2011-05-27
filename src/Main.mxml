@@ -6,14 +6,14 @@
 
 	<fx:Script>
 		<![CDATA[
-			import com.litl.marbelmayhem.controller.GameController;
-			import com.litl.marbelmayhem.model.GameManager;
-			import com.litl.marbelmayhem.service.RemoteManager;
-			import com.litl.marbelmayhem.service.ServiceManager;
-			import com.litl.marbelmayhem.utils.FontManager;
-			import com.litl.marbelmayhem.views.ChannelView;
-			import com.litl.marbelmayhem.views.CountDown;
-			import com.litl.marbelmayhem.views.GameResults;
+			import com.ryancanulla.marbelmayhem.controller.GameController;
+			import com.ryancanulla.marbelmayhem.model.GameManager;
+			import com.ryancanulla.marbelmayhem.service.RemoteManager;
+			import com.ryancanulla.marbelmayhem.service.ServiceManager;
+			import com.ryancanulla.marbelmayhem.utils.FontManager;
+			import com.ryancanulla.marbelmayhem.views.ChannelView;
+			import com.ryancanulla.marbelmayhem.views.CountDown;
+			import com.ryancanulla.marbelmayhem.views.GameResults;
 
 			import mx.core.UIComponent;
 

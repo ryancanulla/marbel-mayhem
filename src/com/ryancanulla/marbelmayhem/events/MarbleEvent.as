@@ -1,8 +1,8 @@
-package com.litl.marbelmayhem.events
+package com.ryancanulla.marbelmayhem.events
 {
-    import com.litl.marbelmayhem.vo.Player;
-    import com.litl.marbelmayhem.vo.RemoteData;
-    
+    import com.ryancanulla.marbelmayhem.vo.Player;
+    import com.ryancanulla.marbelmayhem.vo.RemoteData;
+
     import flash.events.Event;
 
     public class MarbleEvent extends Event
@@ -18,7 +18,7 @@ package com.litl.marbelmayhem.events
         public static const TOTAL_PLAYERS_CHANGED:String = "TotalPlayersChangedMarbleEvent";
         public static const ADD_PLAYER:String = "AddPlayerMarbleEvent";
         public static const REMOVE_PLAYER:String = "RemovePlayerMarbleEvent";
-		
+
 		public static const REMOTE_UPDATE:String = "RemoteUpdateMarbleEvent";
 
         public var player:Player;

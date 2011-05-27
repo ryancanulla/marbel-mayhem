@@ -1,7 +1,7 @@
-package com.litl.marbelmayhem.views
+package com.ryancanulla.marbelmayhem.views
 {
-    import com.litl.marbelmayhem.model.GameManager;
-    import com.litl.marbelmayhem.vo.Player;
+    import com.ryancanulla.marbelmayhem.model.GameManager;
+    import com.ryancanulla.marbelmayhem.vo.Player;
 
     import flash.display.Loader;
     import flash.display.Sprite;

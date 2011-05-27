@@ -1,8 +1,8 @@
-package com.litl.marbelmayhem.vo
+package com.ryancanulla.marbelmayhem.vo
 {
     import alternativa.engine3d.materials.Material;
     import alternativa.engine3d.primitives.Sphere;
-    
+
     import realtimelib.session.UserObject;
 
     public class Player extends Sphere
