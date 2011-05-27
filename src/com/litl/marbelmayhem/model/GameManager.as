@@ -1,14 +1,9 @@
 package com.litl.marbelmayhem.model
 {
-    import com.litl.helpers.richinput.remotehandler.RemoteHandlerManager;
     import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.events.MarbleEvent;
-    import com.litl.marbelmayhem.model.service.LitlViewManager;
     import com.litl.marbelmayhem.vo.Player;
-    import com.litl.sdk.enum.View;
-    import com.litl.sdk.richinput.IRemoteControl;
-    import com.litl.sdk.service.LitlService;
-
+    
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.EventDispatcher;
@@ -24,12 +19,11 @@ package com.litl.marbelmayhem.model
         private var _gamePaused:Boolean;
         private var _gameViewState:String;
         private var _playersInGame:Array;
+		private var _myPlayer:Player;
 
-        //private var _controller:GameController;
         private var gameTimer:Timer;
         private var gameRenderClock:Timer;
         private var timeLeft:Number;
-        private var service:LitlViewManager;
         public var maxLives:Number = 5;
 
         public var countdown:Timer;
@@ -47,7 +41,6 @@ package com.litl.marbelmayhem.model
         }
 
         private function init():void {
-
             _playersInGame = new Array();
             _gameInProgress = false;
 
@@ -178,15 +171,19 @@ package com.litl.marbelmayhem.model
             player.lives = maxLives;
             player.score = 0;
             _playersInGame.push(player);
+			player.playerID = _playersInGame.length;
+			
+			if (player.isMe)
+				_myPlayer = player;
 
             var event:MarbleEvent = new MarbleEvent(MarbleEvent.ADD_PLAYER);
             event.player = player;
             dispatchEvent(event);
         }
 
-        public function removePlayer(remote:IRemoteControl):void {
+        public function removePlayer(id:String):void {
             for (var i:uint = 0; i < _playersInGame.length; i++) {
-                if (Player(_playersInGame[i]).remoteID == remote.id) {
+                if (Player(_playersInGame[i]).id == id) {
                     var event:MarbleEvent = new MarbleEvent(MarbleEvent.REMOVE_PLAYER);
                     event.player = Player(_playersInGame[i]);
                     dispatchEvent(event);
@@ -249,6 +246,10 @@ package com.litl.marbelmayhem.model
             }
             return null;
         }
+		
+		public function get myPlayer():Player {
+			return _myPlayer;
+		}
 
     }
 }

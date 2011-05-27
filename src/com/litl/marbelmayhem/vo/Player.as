@@ -2,11 +2,16 @@ package com.litl.marbelmayhem.vo
 {
     import alternativa.engine3d.materials.Material;
     import alternativa.engine3d.primitives.Sphere;
+    
+    import realtimelib.session.UserObject;
 
     public class Player extends Sphere
     {
+		public var userObject:UserObject;
         public var remoteID:String;
         public var playerID:uint;
+		public var id:String;
+		public var isMe:Boolean;
         public var isPlaying:Boolean = false;
         public var playerName:String;
         public var score:Number = 0;

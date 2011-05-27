@@ -9,15 +9,11 @@ package com.litl.marbelmayhem.controller
 
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
-    import com.litl.marbelmayhem.model.service.LitlServiceManager;
-    import com.litl.marbelmayhem.model.service.LitlViewManager;
+    import com.litl.marbelmayhem.service.RemoteManager;
+    import com.litl.marbelmayhem.service.ServiceManager;
     import com.litl.marbelmayhem.views.ChannelView;
     import com.litl.marbelmayhem.views.ViewBase;
     import com.litl.marbelmayhem.vo.Player;
-    import com.litl.sdk.enum.View;
-    import com.litl.sdk.message.UserInputMessage;
-    import com.litl.sdk.model.ChannelProperties;
-    import com.litl.sdk.service.LitlService;
 
     import flash.display.DisplayObject;
     import flash.display.Sprite;
@@ -29,12 +25,12 @@ package com.litl.marbelmayhem.controller
     {
         private static var _instance:GameController;
         private var _currentView:ViewBase;
-        private var _viewManager:LitlViewManager;
-        private var service:LitlService;
         public var model:GameManager;
+		private var _service:ServiceManager;
+		private var _remoteManager:RemoteManager;
 
         private static const FRICTION:Number = .95;
-        private static const SPEED:Number = 3;
+        private static const SPEED:Number = 8;
         private static const GRAVITY:Number = 37;
         private static const SPRING:Number = .2;
         private static const MASS:Number = 1;
@@ -56,15 +52,11 @@ package com.litl.marbelmayhem.controller
             model.addEventListener(MarbleEvent.GAME_OVER, showGameResults);
             model.addEventListener(MarbleEvent.ADD_PLAYER, addPlayerToStage);
             model.addEventListener(MarbleEvent.REMOVE_PLAYER, removePlayerFromStage);
-
-            service = LitlServiceManager.getInstance().service;
-            service.addEventListener(UserInputMessage.GO_BUTTON_RELEASED, startNewGame);
         }
 
         protected function movePlayer(player:Player):void {
             player.vx *= FRICTION;
             player.vz *= FRICTION;
-
             player.x += player.vx;
             player.z -= player.vz;
             player.rotationX = player.vx * .05;
@@ -72,15 +64,11 @@ package com.litl.marbelmayhem.controller
         }
 
         public function addPlayerToStage(e:MarbleEvent):void {
-            if (_viewManager.currentViewState == View.CHANNEL) {
                 ChannelView(_currentView).addPlayer(e.player);
-            }
         }
 
         public function removePlayerFromStage(e:MarbleEvent):void {
-            if (_viewManager.currentViewState == View.CHANNEL) {
                 ChannelView(_currentView).removePlayer(e.player);
-            }
         }
 
         protected function checkForCollision():Boolean {
@@ -173,19 +161,16 @@ package com.litl.marbelmayhem.controller
         }
 
         protected function renderScreen(e:Event):void {
-            if (_viewManager.currentViewState == View.CHANNEL) {
 
                 if (checkForCollision() == true) {
                     swapVelovities();
 
-                    if (model.gameInProgress) {
+                    if (model.gameInProgress)
                         calculateScores(true);
-                    }
                 }
 
-                if (model.gameInProgress) {
+                if (model.gameInProgress)
                     calculateScores(false);
-                }
 
                 if (!model.gamePaused) {
                     for (var i:uint = 0; i < model.playersInGame.length; i++) {
@@ -193,10 +178,8 @@ package com.litl.marbelmayhem.controller
                         movePlayer(player);
                         addGravity(player);
                     }
-                    sortZ();
+//                    sortZ();
                 }
-
-            }
         }
 
         protected function sortZ():void {
@@ -215,7 +198,7 @@ package com.litl.marbelmayhem.controller
 
         }
 
-        private function startNewGame(e:UserInputMessage):void {
+        private function startNewGame(e:Event):void {
             if (model.gameInProgress) {
                 model.startNewGame();
             }
@@ -236,6 +219,11 @@ package com.litl.marbelmayhem.controller
 
             container.setChildIndex(player, container.numChildren);
         }
+
+		private function remoteUpdate(e:MarbleEvent):void {
+			model.myPlayer.vx -= e.accelerometerRemote.accX * SPEED;
+			model.myPlayer.vz += e.accelerometerRemote.accY * SPEED;
+		}
 
         private function calculateScores(hit:Boolean):void {
             if (hit == true) {
@@ -290,13 +278,18 @@ package com.litl.marbelmayhem.controller
             return result;
         }
 
-        public function set currentView(value:ViewBase):void {
-            _currentView = value;
-        }
+		public function set remoteManager(e:RemoteManager):void {
+			_remoteManager = e;
+			_remoteManager.addEventListener(MarbleEvent.REMOTE_UPDATE, remoteUpdate);
+		}
 
-        public function set viewManager(value:LitlViewManager):void {
-            _viewManager = value;
-        }
+		public function set currentView(e:ViewBase):void {
+			_currentView = e;
+		}
+
+		public function set service(value:ServiceManager):void	{
+			_service = value;
+		}
 
     }
 }

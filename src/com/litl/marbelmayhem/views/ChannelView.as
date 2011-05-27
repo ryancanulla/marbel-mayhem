@@ -9,13 +9,11 @@ package com.litl.marbelmayhem.views
     import alternativa.engine3d.materials.TextureMaterial;
     import alternativa.engine3d.primitives.Plane;
 
-    import com.litl.helpers.richinput.Stats;
     import com.litl.marbelmayhem.controller.GameController;
     import com.litl.marbelmayhem.events.MarbleEvent;
     import com.litl.marbelmayhem.model.GameManager;
     import com.litl.marbelmayhem.utils.GameMaterials;
     import com.litl.marbelmayhem.vo.Player;
-    import com.litl.sdk.service.LitlService;
 
     import flash.display.Bitmap;
     import flash.display.Sprite;
@@ -24,7 +22,6 @@ package com.litl.marbelmayhem.views
     import flash.geom.Point;
     import flash.geom.Vector3D;
 
-    import net.hires.debug.DoobStats;
 
     public class ChannelView extends ViewBase
     {
@@ -39,11 +36,10 @@ package com.litl.marbelmayhem.views
         public var floor:Plane;
         public var scoreboard:Scoreboard;
         public var countdown:CountDown;
-        public var stats:DoobStats;
         public var background1:Bitmap;
         public var background2:Bitmap;
 
-        public function ChannelView(service:LitlService) {
+        public function ChannelView() {
             super();
 
             controller = GameController.getInstance();
@@ -52,17 +48,11 @@ package com.litl.marbelmayhem.views
 
             createView();
             createScoreboard();
-            createStats(service);
             createCountdown();
 
             model.addEventListener(MarbleEvent.RENDER, renderScene);
         }
 
-        private function createStats(service:LitlService):void {
-            stats = new DoobStats(service);
-            addChild(stats);
-
-        }
 
         private function createCountdown():void {
             countdown = new CountDown();
@@ -139,8 +129,6 @@ package com.litl.marbelmayhem.views
             background2.x = (background2.width - 6) * -1;
             background2.y = -500;
 
-            stats.x = 0;
-            stats.y = this.height * .15;
             camera.view.width = this.width;
             camera.view.height = this.height;
 
@@ -148,7 +136,7 @@ package com.litl.marbelmayhem.views
         }
 
         protected function renderScene(e:Event):void {
-            //floor.rotationY += .4 * Math.PI / 180;
+            floor.rotationY += .4 * Math.PI / 180;
             background1.x += .4;
             background2.x += .4;
 
