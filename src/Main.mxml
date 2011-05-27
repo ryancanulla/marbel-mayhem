@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   applicationComplete="init(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import com.litl.marbelmayhem.controller.GameController;
+			import com.litl.marbelmayhem.model.GameManager;
+			import com.litl.marbelmayhem.service.RemoteManager;
+			import com.litl.marbelmayhem.service.ServiceManager;
+			import com.litl.marbelmayhem.utils.FontManager;
+			import com.litl.marbelmayhem.views.ChannelView;
+			import com.litl.marbelmayhem.views.CountDown;
+			import com.litl.marbelmayhem.views.GameResults;
+
+			import mx.core.UIComponent;
+
+			import realtimelib.P2PGame;
+			import realtimelib.RealtimeChannelManager;
+			import realtimelib.session.P2PSession;
+			public var countdown:CountDown;
+			public var gameResults:GameResults;
+			private var controller:GameController;
+			private var model:GameManager;
+			private var session:ServiceManager;
+			private var remoteManager:RemoteManager;
+			private var channel:RealtimeChannelManager;
+			private var connection:NetConnection;
+
+			private var view:ChannelView;
+
+			private var uiComp:UIComponent;
+
+			private function init(e:Event):void {
+
+				uiComp = new UIComponent();
+				addElement(uiComp);
+
+				var fonts:FontManager = new FontManager();
+
+				stage.scaleMode = StageScaleMode.NO_SCALE;
+				stage.align = StageAlign.TOP_LEFT;
+				stage.frameRate = 60;
+
+				addEventListener(Event.ADDED_TO_STAGE, init);
+
+				//            serviceManager = LitlServiceManager.getInstance();
+				//            serviceManager.view = this;
+
+				view = new ChannelView();
+				view.setSize(stage.stageWidth, stage.stageHeight);
+				uiComp.addChild(view);
+
+				model = GameManager.getInstance();
+
+				session = new ServiceManager();
+				session.model = model;
+
+				remoteManager = new RemoteManager();
+				remoteManager.connect();
+
+				controller = GameController.getInstance();
+				controller.currentView = view;
+				controller.remoteManager = remoteManager;
+
+				//
+				//            viewManager = new LitlViewManager(this);
+				//            viewManager.service = serviceManager.service;
+				//            addChild(viewManager);
+
+
+				//countdown = new CountDown(this.stage);
+				//gameResults = new GameResults(this.stage);
+			}
+
+		]]>
+	</fx:Script>
+</s:Application>
